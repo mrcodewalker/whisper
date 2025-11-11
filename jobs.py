@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import os, shutil
-from utils import merge_audio_chunks, build_docx_and_pdf, r
+import os
+from utils import merge_audio_chunks, build_docx_and_pdf
 from datetime import datetime
 
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
@@ -8,7 +8,6 @@ MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
     from utils import transcribe_with_whisper, append_transcript_cache
     text = transcribe_with_whisper(filepath)
-
     entry = {
         "ts": ts,
         "user_id": user_id,
@@ -17,33 +16,32 @@ def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
         "text": text,
         "source_file": filepath
     }
-
     append_transcript_cache(meeting_id, entry)
     return {"meeting_id": meeting_id, "user_id": user_id, "text_len": len(text)}
 
-
 def enqueue_merge_job(meeting_id):
-    merge_lock_key = f"meeting:{meeting_id}:merge_in_progress"
-    try:
-        meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
-        audio_dir = os.path.join(meeting_dir, "audio")
-        final_dir = os.path.join(meeting_dir, "final")
-        os.makedirs(final_dir, exist_ok=True)
-
-        # 1. Merge audio chunks
-        merged_audio_path = os.path.join(meeting_dir, f"{meeting_id}_merged.wav")
-        merge_audio_chunks(audio_dir, merged_audio_path)
-
-        # 2. Build transcript
-        from utils import build_transcript_from_cache
-        transcript_text = build_transcript_from_cache(meeting_id)
-
-        # 3. Build docx & pdf
-        build_docx_and_pdf(meeting_id, transcript_text, final_dir)
-
-        # 4. Clean audio chunks (optional)
-        shutil.rmtree(audio_dir, ignore_errors=True)
-
-    finally:
-        # Release merge lock
-        r.delete(merge_lock_key)
+    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
+    chunks_dir = os.path.join(meeting_dir, "chunks")
+    final_dir = os.path.join(meeting_dir, "final")
+    os.makedirs(final_dir, exist_ok=True)
+    log_path = os.path.join(meeting_dir, "merge.log")
+    timestamp = datetime.utcnow().strftime("%d-%m-%Y_%H-%M-%S")
+    merged_path = os.path.join(final_dir, f"merged_{timestamp}.wav")
+    
+    with open(log_path, "a", encoding="utf-8") as log:
+        log.write(f"\n=== Merge started at {datetime.utcnow()} ===\n")
+        log.write(f"Chunks dir: {chunks_dir}\n")
+        log.write(f"Output file: {merged_path}\n")
+        try:
+            if not os.path.exists(chunks_dir) or not os.listdir(chunks_dir):
+                raise RuntimeError("No audio chunks to merge")
+            merge_audio_chunks(chunks_dir, merged_path)
+            log.write(f"Merge completed successfully!\n")
+            log.write(f"Merged file: {merged_path}\n")
+        except Exception as e:
+            log.write(f"Merge failed: {e}\n")
+            raise
+        finally:
+            log.write(f"=== Merge ended at {datetime.utcnow()} ===\n")
+    
+    return {"status": "merged", "output": merged_path}

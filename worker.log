@@ -473,3 +473,297 @@ INFO:rq.worker:Result is kept for 500 seconds
 15:37:54 Cleaning registries for queue: meeting-jobs
 15:51:25 Cleaning registries for queue: meeting-jobs
 16:04:55 Cleaning registries for queue: meeting-jobs
+16:14:12 meeting-jobs: jobs.enqueue_merge_job('19') (2a425be5-b2de-40b8-89e9-838e319f9d57)
+16:14:12 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+16:19:41 meeting-jobs: jobs.enqueue_merge_job('19') (4dc7f83c-3d76-4159-900f-7ab8d94a35fe)
+16:19:42 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+16:19:42 Cleaning registries for queue: meeting-jobs
+16:19:48 meeting-jobs: jobs.enqueue_merge_job('19') (1ea55eaa-0cdc-4253-beb7-761416f38d83)
+16:19:49 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+16:29:07 meeting-jobs: jobs.enqueue_merge_job('19') (b4b62e5f-18c3-4d2e-8bda-2ad75a424761)
+16:29:07 [Job b4b62e5f-18c3-4d2e-8bda-2ad75a424761]: exception raised while executing (jobs.enqueue_merge_job)
+Traceback (most recent call last):
+  File "/home/thuanld/cron-job/utils.py", line 28, in merge_audio_chunks
+    subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+  File "/usr/lib/python3.8/subprocess.py", line 364, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', 'meetings/19/chunks/list.txt', '-c', 'copy', 'meetings/19/final/merged_11-11-2025_09-29-07.wav']' returned non-zero exit status 1.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/worker.py", line 1644, in perform_job
+    return_value = job.perform()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1344, in perform
+    self._result = self._execute()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1378, in _execute
+    result = self.func(*self.args, **self.kwargs)
+  File "/home/thuanld/cron-job/jobs.py", line 48, in enqueue_merge_job
+    merge_audio_chunks(chunks_dir, merged_path)
+  File "/home/thuanld/cron-job/utils.py", line 30, in merge_audio_chunks
+    raise RuntimeError(f"FFmpeg merge failed: {e}")
+RuntimeError: FFmpeg merge failed: Command '['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', 'meetings/19/chunks/list.txt', '-c', 'copy', 'meetings/19/final/merged_11-11-2025_09-29-07.wav']' returned non-zero exit status 1.
+
+16:29:50 meeting-jobs: jobs.enqueue_merge_job('19') (a1aea800-6d1b-4ea0-b3a4-c7d569c99092)
+16:29:50 [Job a1aea800-6d1b-4ea0-b3a4-c7d569c99092]: exception raised while executing (jobs.enqueue_merge_job)
+Traceback (most recent call last):
+  File "/home/thuanld/cron-job/utils.py", line 28, in merge_audio_chunks
+    subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+  File "/usr/lib/python3.8/subprocess.py", line 364, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', 'meetings/19/chunks/list.txt', '-c', 'copy', 'meetings/19/final/merged_11-11-2025_09-29-50.wav']' returned non-zero exit status 1.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/worker.py", line 1644, in perform_job
+    return_value = job.perform()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1344, in perform
+    self._result = self._execute()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1378, in _execute
+    result = self.func(*self.args, **self.kwargs)
+  File "/home/thuanld/cron-job/jobs.py", line 48, in enqueue_merge_job
+    merge_audio_chunks(chunks_dir, merged_path)
+  File "/home/thuanld/cron-job/utils.py", line 30, in merge_audio_chunks
+    raise RuntimeError(f"FFmpeg merge failed: {e}")
+RuntimeError: FFmpeg merge failed: Command '['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', 'meetings/19/chunks/list.txt', '-c', 'copy', 'meetings/19/final/merged_11-11-2025_09-29-50.wav']' returned non-zero exit status 1.
+
+16:29:50 Cleaning registries for queue: meeting-jobs
+16:32:02 meeting-jobs: jobs.enqueue_merge_job('19') (b45540ba-2f72-4e0e-a4a4-9228dc6886c9)
+ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, concat, from 'meetings/19/chunks/list.txt':
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp
+Stream mapping:
+  Stream #0:0 -> #0:0 (opus (native) -> pcm_s16le (native))
+Press [q] to stop, [?] for help
+Output #0, wav, to 'meetings/19/final/merged_11-11-2025_09-32-02.wav':
+  Metadata:
+    ISFT            : Lavf58.29.100
+    Stream #0:0(eng): Audio: pcm_s16le ([1][0][0][0] / 0x0001), 48000 Hz, mono, s16, 768 kb/s
+    Metadata:
+      encoder         : Lavc58.54.100 pcm_s16le
+[concat @ 0x563ec56fb1c0] Impossible to open '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav'
+meetings/19/chunks/list.txt: Invalid data found when processing input
+size=     979kB time=00:00:10.43 bitrate= 768.1kbits/s speed= 381x    
+video:0kB audio:979kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.007783%
+16:32:02 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.152407s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+16:32:02 meeting-jobs: Job OK (b45540ba-2f72-4e0e-a4a4-9228dc6886c9)
+16:32:02 Result is kept for 500 seconds
+16:32:41 meeting-jobs: jobs.enqueue_merge_job('19') (d68a3cd9-9740-4435-bda0-642b17ffadbd)
+16:32:41 [Job d68a3cd9-9740-4435-bda0-642b17ffadbd]: exception raised while executing (jobs.enqueue_merge_job)
+Traceback (most recent call last):
+  File "/home/thuanld/cron-job/utils.py", line 28, in merge_audio_chunks
+    subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+  File "/usr/lib/python3.8/subprocess.py", line 364, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', 'meetings/19/chunks/list.txt', '-c', 'copy', 'meetings/19/final/merged_11-11-2025_09-32-41.wav']' returned non-zero exit status 1.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/worker.py", line 1644, in perform_job
+    return_value = job.perform()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1344, in perform
+    self._result = self._execute()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1378, in _execute
+    result = self.func(*self.args, **self.kwargs)
+  File "/home/thuanld/cron-job/jobs.py", line 48, in enqueue_merge_job
+    merge_audio_chunks(chunks_dir, merged_path)
+  File "/home/thuanld/cron-job/utils.py", line 30, in merge_audio_chunks
+    raise RuntimeError(f"FFmpeg merge failed: {e}")
+RuntimeError: FFmpeg merge failed: Command '['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', 'meetings/19/chunks/list.txt', '-c', 'copy', 'meetings/19/final/merged_11-11-2025_09-32-41.wav']' returned non-zero exit status 1.
+
+16:46:11 Cleaning registries for queue: meeting-jobs
+16:49:02 meeting-jobs: jobs.enqueue_merge_job('19') (b100466b-cada-4bdc-b484-d393e582b1c3)
+16:49:02 [Job b100466b-cada-4bdc-b484-d393e582b1c3]: exception raised while executing (jobs.enqueue_merge_job)
+Traceback (most recent call last):
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/worker.py", line 1644, in perform_job
+    return_value = job.perform()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1344, in perform
+    self._result = self._execute()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1378, in _execute
+    result = self.func(*self.args, **self.kwargs)
+  File "/home/thuanld/cron-job/jobs.py", line 56, in enqueue_merge_job
+    result_path = merge_audio_chunks(chunks_dir, merged_path)
+  File "/home/thuanld/cron-job/utils.py", line 51, in merge_audio_chunks
+    raise RuntimeError(f"FFmpeg merge failed:\n{result.stderr}")
+RuntimeError: FFmpeg merge failed:
+ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, concat, from 'meetings/19/chunks/list.txt':
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp
+[wav @ 0x561aa78ed300] opus codec not supported in WAVE format
+Could not write header for output file #0 (incorrect codec parameters ?): Function not implemented
+Stream mapping:
+  Stream #0:0 -> #0:0 (copy)
+    Last message repeated 1 times
+
+
+16:50:32 meeting-jobs: jobs.enqueue_merge_job('19') (f3a3284e-5b1e-4de8-8c65-cf5432289a20)
+16:50:32 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+16:55:07 meeting-jobs: jobs.enqueue_merge_job('19') (13d58466-3938-4047-bed3-004f9d142e64)
+16:55:07 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+16:58:54 meeting-jobs: jobs.enqueue_merge_job('19') (863746b3-7efd-4e51-bc92-bf107c08dbf1)
+16:58:54 [Job 863746b3-7efd-4e51-bc92-bf107c08dbf1]: exception raised while executing (jobs.enqueue_merge_job)
+Traceback (most recent call last):
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/worker.py", line 1644, in perform_job
+    return_value = job.perform()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1344, in perform
+    self._result = self._execute()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1378, in _execute
+    result = self.func(*self.args, **self.kwargs)
+  File "/home/thuanld/cron-job/jobs.py", line 38, in enqueue_merge_job
+    merge_audio_chunks(chunks_dir, merged_path)
+  File "/home/thuanld/cron-job/utils.py", line 32, in merge_audio_chunks
+    raise RuntimeError(f"FFmpeg error: {result.stderr}")
+RuntimeError: FFmpeg error: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, concat, from 'meetings/19/chunks/list.txt':
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp
+[wav @ 0x559774271300] opus codec not supported in WAVE format
+Could not write header for output file #0 (incorrect codec parameters ?): Function not implemented
+Stream mapping:
+  Stream #0:0 -> #0:0 (copy)
+    Last message repeated 1 times
+
+
+16:58:54 Cleaning registries for queue: meeting-jobs
+17:01:09 meeting-jobs: jobs.enqueue_merge_job('19') (27a12e7e-48aa-435f-996f-440092b7bd4f)
+17:01:09 [Job 27a12e7e-48aa-435f-996f-440092b7bd4f]: exception raised while executing (jobs.enqueue_merge_job)
+Traceback (most recent call last):
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/worker.py", line 1644, in perform_job
+    return_value = job.perform()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1344, in perform
+    self._result = self._execute()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1378, in _execute
+    result = self.func(*self.args, **self.kwargs)
+  File "/home/thuanld/cron-job/jobs.py", line 38, in enqueue_merge_job
+    merge_audio_chunks(chunks_dir, merged_path)
+  File "/home/thuanld/cron-job/utils.py", line 32, in merge_audio_chunks
+    raise RuntimeError(f"FFmpeg error: {result.stderr}")
+RuntimeError: FFmpeg error: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, concat, from 'meetings/19/chunks/list.txt':
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp
+[wav @ 0x562d051c3340] opus codec not supported in WAVE format
+Could not write header for output file #0 (incorrect codec parameters ?): Function not implemented
+Stream mapping:
+  Stream #0:0 -> #0:0 (copy)
+    Last message repeated 1 times
+
+
+17:03:31 meeting-jobs: jobs.enqueue_merge_job('19') (f7ff1d80-6af2-4ff5-bf31-58ed0b125fca)
+17:03:31 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.117170s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+17:03:31 meeting-jobs: Job OK (f7ff1d80-6af2-4ff5-bf31-58ed0b125fca)
+17:03:31 Result is kept for 500 seconds
+17:07:43 meeting-jobs: jobs.enqueue_merge_job('19') (fbc3aa29-b631-4b79-bbbf-799c57c8f074)
+17:07:43 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.198206s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+17:07:43 meeting-jobs: Job OK (fbc3aa29-b631-4b79-bbbf-799c57c8f074)
+17:07:43 Result is kept for 500 seconds
+17:12:20 meeting-jobs: jobs.enqueue_merge_job('19') (b577af7b-6c5a-4434-83b7-b534245dc47b)
+17:12:21 [Job b577af7b-6c5a-4434-83b7-b534245dc47b]: exception raised while executing (jobs.enqueue_merge_job)
+Traceback (most recent call last):
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/worker.py", line 1644, in perform_job
+    return_value = job.perform()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1344, in perform
+    self._result = self._execute()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1378, in _execute
+    result = self.func(*self.args, **self.kwargs)
+  File "/home/thuanld/cron-job/jobs.py", line 38, in enqueue_merge_job
+    merge_audio_chunks(chunks_dir, merged_path)
+  File "/home/thuanld/cron-job/utils.py", line 35, in merge_audio_chunks
+    "-c:a", "libopus", "-b:a", "64k", merged_path.replace(".wav", ".ogg")
+NameError: name 'merged_path' is not defined
+
+17:12:21 Cleaning registries for queue: meeting-jobs
+17:12:21 meeting-jobs: jobs.enqueue_merge_job('19') (c1089e45-2dbf-46b8-959e-26c5bbf4f7b9)
+17:12:21 [Job c1089e45-2dbf-46b8-959e-26c5bbf4f7b9]: exception raised while executing (jobs.enqueue_merge_job)
+Traceback (most recent call last):
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/worker.py", line 1644, in perform_job
+    return_value = job.perform()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1344, in perform
+    self._result = self._execute()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1378, in _execute
+    result = self.func(*self.args, **self.kwargs)
+  File "/home/thuanld/cron-job/jobs.py", line 38, in enqueue_merge_job
+    merge_audio_chunks(chunks_dir, merged_path)
+  File "/home/thuanld/cron-job/utils.py", line 35, in merge_audio_chunks
+    "-c:a", "libopus", "-b:a", "64k", merged_path.replace(".wav", ".ogg")
+NameError: name 'merged_path' is not defined
+
+17:13:49 meeting-jobs: jobs.enqueue_merge_job('19') (58d909b4-2bfe-4500-ba03-19a4fee48eac)
+17:13:50 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.384977s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+17:13:50 meeting-jobs: Job OK (58d909b4-2bfe-4500-ba03-19a4fee48eac)
+17:13:50 Result is kept for 500 seconds
+17:15:26 meeting-jobs: jobs.enqueue_merge_job('19') (4803d0ff-4e92-4186-8f50-bff7eb7ac6ea)
+17:15:26 [Job 4803d0ff-4e92-4186-8f50-bff7eb7ac6ea]: exception raised while executing (jobs.enqueue_merge_job)
+Traceback (most recent call last):
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/worker.py", line 1644, in perform_job
+    return_value = job.perform()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1344, in perform
+    self._result = self._execute()
+  File "/home/thuanld/.local/lib/python3.8/site-packages/rq/job.py", line 1378, in _execute
+    result = self.func(*self.args, **self.kwargs)
+  File "/home/thuanld/cron-job/jobs.py", line 38, in enqueue_merge_job
+    merge_audio_chunks(chunks_dir, merged_path)
+  File "/home/thuanld/cron-job/utils.py", line 42, in merge_audio_chunks
+    "-c", "copy", out_ogg
+NameError: name 'out_ogg' is not defined
+
+17:16:14 meeting-jobs: jobs.enqueue_merge_job('19') (8ceabc59-d931-4d73-b2a0-0d6aa0c39e69)
+17:16:14 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.142361s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+17:16:14 meeting-jobs: Job OK (8ceabc59-d931-4d73-b2a0-0d6aa0c39e69)
+17:16:14 Result is kept for 500 seconds
+17:18:29 meeting-jobs: jobs.enqueue_merge_job('19') (eb79823e-08f7-41f5-83a8-f87a62363d98)
+17:18:29 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.198389s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+17:18:29 meeting-jobs: Job OK (eb79823e-08f7-41f5-83a8-f87a62363d98)
+17:18:29 Result is kept for 500 seconds
+17:19:36 meeting-jobs: jobs.enqueue_merge_job('19') (9368d91f-2ea3-419c-9ec1-4284ef283515)
+17:19:36 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.354875s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+17:19:36 meeting-jobs: Job OK (9368d91f-2ea3-419c-9ec1-4284ef283515)
+17:19:36 Result is kept for 500 seconds

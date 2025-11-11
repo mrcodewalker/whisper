@@ -100,15 +100,12 @@ def merge_meeting():
         return jsonify({"error": "missing meeting_id"}), 400
 
     meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
-    audio_dir = os.path.join(meeting_dir, "audio")
-    if not os.path.exists(audio_dir) or not os.listdir(audio_dir):
-        return jsonify({"error": "no audio chunks to merge"}), 400
+    chunks_dir = os.path.join(meeting_dir, "chunks")
 
-    merge_lock_key = f"meeting:{meeting_id}:merge_in_progress"
-    if redis_conn.get(merge_lock_key):
-        return jsonify({"error": "merge already in progress"}), 429
+    if not os.path.exists(chunks_dir) or not os.listdir(chunks_dir):
+        return jsonify({"error": "no audio chunks found"}), 400
 
-    redis_conn.setex(merge_lock_key, 3600, "1")  # lock 1h
+    # Enqueue job merge
     job = q.enqueue(enqueue_merge_job, meeting_id, job_timeout=3600)
     return jsonify({"status": "merge_queued", "job_id": job.id}), 202
 

@@ -1,0 +1,8 @@
+nohup: ignoring input
+[2025-11-11 15:49:34 +0700] [3139512] [INFO] Starting gunicorn 23.0.0
+[2025-11-11 15:49:34 +0700] [3139512] [INFO] Listening at: http://127.0.0.1:5000 (3139512)
+[2025-11-11 15:49:34 +0700] [3139512] [INFO] Using worker: sync
+[2025-11-11 15:49:34 +0700] [3139514] [INFO] Booting worker with pid: 3139514
+[2025-11-11 15:49:34 +0700] [3139515] [INFO] Booting worker with pid: 3139515
+[2025-11-11 15:49:34 +0700] [3139517] [INFO] Booting worker with pid: 3139517
+[2025-11-11 15:49:34 +0700] [3139516] [INFO] Booting worker with pid: 3139516

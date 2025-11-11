@@ -1,0 +1,11 @@
+Flask==2.3.2
+redis==4.5.5
+rq==1.12.0
+pydub==0.25.1
+python-docx==0.8.12
+whisper==20230922       # package openai-whisper (local) — tên có thể khác theo release
+torch>=1.12.0           # GPU/CPU build theo môi trường
+PyPDF2==3.0.1
+cryptography==41.0.2
+pyhanko==0.15.0         # optional, cho ký số pdf (nếu bạn muốn ký thật)
+python-magic==0.4.27

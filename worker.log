@@ -1,0 +1,475 @@
+nohup: ignoring input
+10:19:59 Worker rq:worker:990377f887aa4fbb9e1e1a5e35ce207d started with PID 2550515, version 2.3.3
+10:19:59 Subscribing to channel rq:pubsub:990377f887aa4fbb9e1e1a5e35ce207d
+10:19:59 *** Listening on meeting-jobs...
+10:19:59 Cleaning registries for queue: meeting-jobs
+10:33:29 Cleaning registries for queue: meeting-jobs
+10:46:59 Cleaning registries for queue: meeting-jobs
+11:00:29 Cleaning registries for queue: meeting-jobs
+11:13:59 Cleaning registries for queue: meeting-jobs
+11:27:30 Cleaning registries for queue: meeting-jobs
+11:41:00 Cleaning registries for queue: meeting-jobs
+11:54:30 Cleaning registries for queue: meeting-jobs
+12:08:00 Cleaning registries for queue: meeting-jobs
+12:21:30 Cleaning registries for queue: meeting-jobs
+12:35:00 Cleaning registries for queue: meeting-jobs
+12:48:31 Cleaning registries for queue: meeting-jobs
+13:02:01 Cleaning registries for queue: meeting-jobs
+13:15:31 Cleaning registries for queue: meeting-jobs
+13:29:01 Cleaning registries for queue: meeting-jobs
+13:42:31 Cleaning registries for queue: meeting-jobs
+13:56:02 Cleaning registries for queue: meeting-jobs
+14:09:32 Cleaning registries for queue: meeting-jobs
+14:10:54 meeting-jobs: jobs.enqueue_merge_job('19') (2edf3930-04a8-4d03-9750-ec26a81b2c11)
+14:10:54 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:10:54 meeting-jobs: jobs.enqueue_merge_job('19') (d283178b-fbb0-413c-b201-dfea1b182b82)
+14:10:54 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:11:28 meeting-jobs: jobs.enqueue_merge_job('19') (8ae83d98-79c4-4d0a-ac95-c61490746ed2)
+14:11:28 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:11:29 meeting-jobs: jobs.enqueue_merge_job('19') (da68d4ba-92ad-4b78-89b0-05da36e0f2bd)
+14:11:29 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:15:49 meeting-jobs: jobs.enqueue_merge_job('19') (f6825e1c-3da1-4b48-8b17-dc752c6981d9)
+14:15:49 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:21:21 meeting-jobs: jobs.enqueue_merge_job('19') (193a2ec5-0841-49c0-83db-30104802cb75)
+14:21:22 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:21:22 Cleaning registries for queue: meeting-jobs
+14:21:45 meeting-jobs: jobs.enqueue_merge_job('19') (cfeafa55-c3d0-4c6b-ac04-9b57266968ef)
+14:21:45 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:28:55 meeting-jobs: jobs.enqueue_merge_job('19') (ffc5fd32-b3cb-447a-9d2f-2503d73ef4b3)
+14:28:55 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:31:28 meeting-jobs: jobs.enqueue_merge_job('19') (0f43b76d-332d-40da-adf3-4e1c7215dbe9)
+14:31:28 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:31:28 Cleaning registries for queue: meeting-jobs
+14:34:49 meeting-jobs: jobs.enqueue_merge_job('19') (dc919cdb-df0d-4a2f-bce6-7d9b7769c1b6)
+14:34:49 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:38:55 meeting-jobs: jobs.enqueue_merge_job('19') (bce2d8e2-bc89-4998-9dc2-c2da80074462)
+14:38:55 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:39:06 meeting-jobs: jobs.enqueue_merge_job('19') (89830b18-89bb-45e4-8606-b4faff3cc053)
+14:39:06 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:42:15 meeting-jobs: jobs.enqueue_merge_job('2') (1b1e48e5-a946-4450-8591-167dc5435932)
+14:42:15 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:42:15 Cleaning registries for queue: meeting-jobs
+14:42:41 meeting-jobs: jobs.enqueue_merge_job('19') (3fdb71a4-1338-4908-981e-4c177f0166e4)
+14:42:41 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:45:00 meeting-jobs: jobs.enqueue_merge_job('19') (986102fa-2be4-44de-aad3-b71dd8b8aa8b)
+14:45:00 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:45:05 meeting-jobs: jobs.enqueue_merge_job('2') (6864df58-ab0d-47ac-ac89-2506de046a8a)
+14:45:05 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:46:44 meeting-jobs: jobs.enqueue_merge_job('2') (11cefddb-6b87-459a-b33d-a89fa310e5a8)
+14:46:44 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+14:53:29 Cleaning registries for queue: meeting-jobs
+14:55:48 meeting-jobs: jobs.enqueue_merge_job('2') (9e7b6758-d6f3-4cd6-a6a3-3a65945ad71d)
+14:55:48 Moving job to FailedJobRegistry (Work-horse terminated unexpectedly; waitpid returned 256; )
+15:02:13 meeting-jobs: jobs.enqueue_merge_job('19') (a6a62153-8c86-409e-a874-2bf4d830916e)
+15:02:16 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:03.100556s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+15:02:16 meeting-jobs: Job OK (a6a62153-8c86-409e-a874-2bf4d830916e)
+15:02:16 Result is kept for 500 seconds
+15:05:12 meeting-jobs: jobs.enqueue_merge_job('19') (20c23f7a-7ff8-47de-b6b4-f930a5d7659e)
+INFO:utils:Merging audio chunks from meetings/19/chunks
+INFO:utils:Files to merge: ['11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav', '11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav', '11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav', '11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav', '11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav', '11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav', '11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav', '11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav', '11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav', '11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav', '11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav', '11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav']
+INFO:utils:Adding 11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav to merge...
+INFO:utils:Adding 11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav to merge...
+15:05:13 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.310162s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+INFO:rq.worker:Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.310162s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+15:05:13 meeting-jobs: Job OK (20c23f7a-7ff8-47de-b6b4-f930a5d7659e)
+INFO:rq.worker:meeting-jobs: Job OK (20c23f7a-7ff8-47de-b6b4-f930a5d7659e)
+15:05:13 Result is kept for 500 seconds
+INFO:rq.worker:Result is kept for 500 seconds
+15:05:13 Cleaning registries for queue: meeting-jobs
+15:11:52 meeting-jobs: jobs.enqueue_merge_job('19') (45bc0ffd-df5d-4201-b311-551843cb7ca5)
+INFO:utils:Merging audio chunks from meetings/19/chunks
+INFO:utils:Found 12 files to merge
+INFO:utils:Created file list: meetings/19/chunks/filelist.txt
+INFO:utils:Running ffmpeg: ffmpeg -f concat -safe 0 -i meetings/19/chunks/filelist.txt -c copy -y meetings/19/final/19_merged.wav
+ERROR:utils:ffmpeg error: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+meetings/19/chunks/filelist.txt: No such file or directory
+
+15:11:52 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.137427s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+INFO:rq.worker:Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.137427s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+15:11:52 meeting-jobs: Job OK (45bc0ffd-df5d-4201-b311-551843cb7ca5)
+INFO:rq.worker:meeting-jobs: Job OK (45bc0ffd-df5d-4201-b311-551843cb7ca5)
+15:11:52 Result is kept for 500 seconds
+INFO:rq.worker:Result is kept for 500 seconds
+15:16:03 meeting-jobs: jobs.enqueue_merge_job('19') (4745a072-be17-402c-83f5-5c17b138b020)
+INFO:utils:============================================================
+INFO:utils:Starting audio merge
+INFO:utils:Chunks directory: meetings/19/chunks
+INFO:utils:Output path: meetings/19/final/19_merged.wav
+INFO:utils:Found 12 files to merge (sorted by timestamp):
+INFO:utils:  1. 11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav
+INFO:utils:  2. 11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav
+INFO:utils:  3. 11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav
+INFO:utils:  4. 11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav
+INFO:utils:  5. 11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav
+INFO:utils:  6. 11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav
+INFO:utils:  7. 11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav
+INFO:utils:  8. 11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav
+INFO:utils:  9. 11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav
+INFO:utils:  10. 11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav
+INFO:utils:  11. 11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav
+INFO:utils:  12. 11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav
+INFO:utils:Created file list: meetings/19/chunks/filelist.txt
+INFO:utils:File list contents:
+INFO:utils:file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav'
+file '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav'
+
+INFO:utils:Running ffmpeg command:
+INFO:utils:  ffmpeg -f concat -safe 0 -i meetings/19/chunks/filelist.txt -c copy -y meetings/19/final/19_merged.wav
+ERROR:utils:============================================================
+ERROR:utils:ffmpeg error occurred!
+ERROR:utils:Return code: 1
+ERROR:utils:stdout: 
+ERROR:utils:stderr: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, concat, from 'meetings/19/chunks/filelist.txt':
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp
+[wav @ 0x55f018e44e00] opus codec not supported in WAVE format
+Could not write header for output file #0 (incorrect codec parameters ?): Function not implemented
+Stream mapping:
+  Stream #0:0 -> #0:0 (copy)
+    Last message repeated 1 times
+
+ERROR:utils:============================================================
+15:16:04 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.128207s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+INFO:rq.worker:Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.128207s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+15:16:04 meeting-jobs: Job OK (4745a072-be17-402c-83f5-5c17b138b020)
+INFO:rq.worker:meeting-jobs: Job OK (4745a072-be17-402c-83f5-5c17b138b020)
+15:16:04 Result is kept for 500 seconds
+INFO:rq.worker:Result is kept for 500 seconds
+15:16:04 Cleaning registries for queue: meeting-jobs
+15:19:19 meeting-jobs: jobs.enqueue_merge_job('19') (964cfd49-7ccd-4460-ac22-3080438f00cd)
+INFO:jobs:===== COMPLETE MERGE JOB STARTED for meeting: 19 =====
+INFO:jobs:STEP 1: Merging audio files...
+INFO:jobs:===== AUDIO MERGE JOB STARTED for meeting: 19 =====
+INFO:jobs:Chunks dir: meetings/19/chunks
+INFO:jobs:Final dir: meetings/19/final
+INFO:jobs:Found 12 chunk files
+INFO:jobs:Merging audio chunks...
+INFO:utils:============================================================
+INFO:utils:Starting audio merge
+INFO:utils:Chunks directory: meetings/19/chunks
+INFO:utils:Output path: meetings/19/final/19_merged.wav
+INFO:utils:Found 12 files to merge (sorted by timestamp):
+INFO:utils:  1. 11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav (168,245 bytes)
+INFO:utils:  2. 11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav (3,864 bytes)
+INFO:utils:  3. 11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav (3,864 bytes)
+INFO:utils:  4. 11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav (37,835 bytes)
+INFO:utils:  5. 11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav (137,333 bytes)
+INFO:utils:  6. 11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav (72,611 bytes)
+INFO:utils:  7. 11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav (68,747 bytes)
+INFO:utils:  8. 11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav (77,441 bytes)
+INFO:utils:  9. 11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav (77,441 bytes)
+INFO:utils:  10. 11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav (255,185 bytes)
+INFO:utils:  11. 11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav (483,162 bytes)
+INFO:utils:  12. 11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav (175,827 bytes)
+INFO:utils:Running ffmpeg command:
+INFO:utils:  ffmpeg -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav -filter_complex [0:a][1:a][2:a][3:a][4:a][5:a][6:a][7:a][8:a][9:a][10:a][11:a]concat=n=12:v=0:a=1[out] -map [out] -ar 16000 -ac 1 -y meetings/19/final/19_merged.wav
+ERROR:utils:============================================================
+ERROR:utils:ffmpeg error occurred!
+ERROR:utils:Return code: 1
+ERROR:utils:Command: ffmpeg -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav -filter_complex [0:a][1:a][2:a][3:a][4:a][5:a][6:a][7:a][8:a][9:a][10:a][11:a]concat=n=12:v=0:a=1[out] -map [out] -ar 16000 -ac 1 -y meetings/19/final/19_merged.wav
+ERROR:utils:stderr: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, matroska,webm, from '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav':
+  Metadata:
+    encoder         : Chrome
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp (default)
+/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav: Invalid data found when processing input
+
+ERROR:utils:============================================================
+ERROR:jobs:===== AUDIO MERGE JOB FAILED =====
+ERROR:jobs:Error: ffmpeg merge failed: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, matroska,webm, from '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav':
+  Metadata:
+    encoder         : Chrome
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp (default)
+/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav: Invalid data found when processing input
+Traceback (most recent call last):
+  File "/home/thuanld/cron-job/utils.py", line 140, in merge_audio_chunks
+    result = subprocess.run(
+  File "/usr/lib/python3.8/subprocess.py", line 516, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['ffmpeg', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav', '-filter_complex', '[0:a][1:a][2:a][3:a][4:a][5:a][6:a][7:a][8:a][9:a][10:a][11:a]concat=n=12:v=0:a=1[out]', '-map', '[out]', '-ar', '16000', '-ac', '1', '-y', 'meetings/19/final/19_merged.wav']' returned non-zero exit status 1.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/thuanld/cron-job/jobs.py", line 106, in merge_audio_job
+    merge_audio_chunks(chunks_dir, merged_audio_path)
+  File "/home/thuanld/cron-job/utils.py", line 179, in merge_audio_chunks
+    raise RuntimeError(f"ffmpeg merge failed: {e.stderr}")
+RuntimeError: ffmpeg merge failed: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, matroska,webm, from '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav':
+  Metadata:
+    encoder         : Chrome
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp (default)
+/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav: Invalid data found when processing input
+
+ERROR:jobs:===== COMPLETE MERGE JOB FAILED =====
+ERROR:jobs:Error: Audio merge failed: ffmpeg merge failed: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, matroska,webm, from '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav':
+  Metadata:
+    encoder         : Chrome
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp (default)
+/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav: Invalid data found when processing input
+Traceback (most recent call last):
+  File "/home/thuanld/cron-job/jobs.py", line 227, in enqueue_merge_job
+    raise RuntimeError(f"Audio merge failed: {audio_result.get('error')}")
+RuntimeError: Audio merge failed: ffmpeg merge failed: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, matroska,webm, from '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav':
+  Metadata:
+    encoder         : Chrome
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp (default)
+/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav: Invalid data found when processing input
+
+15:19:19 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.153330s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+INFO:rq.worker:Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.153330s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+15:19:19 meeting-jobs: Job OK (964cfd49-7ccd-4460-ac22-3080438f00cd)
+INFO:rq.worker:meeting-jobs: Job OK (964cfd49-7ccd-4460-ac22-3080438f00cd)
+15:19:19 Result is kept for 500 seconds
+INFO:rq.worker:Result is kept for 500 seconds
+15:26:04 Cleaning registries for queue: meeting-jobs
+15:31:09 meeting-jobs: jobs.enqueue_merge_job('19') (dab3f214-17f5-4651-b047-c196a7f7b3a0)
+INFO:jobs:===== COMPLETE MERGE JOB STARTED for meeting: 19 =====
+INFO:jobs:STEP 1: Merging audio files...
+INFO:jobs:===== AUDIO MERGE JOB STARTED for meeting: 19 =====
+INFO:jobs:Chunks dir: meetings/19/chunks
+INFO:jobs:Final dir: meetings/19/final
+INFO:jobs:Found 12 chunk files
+INFO:jobs:Merging audio chunks...
+INFO:utils:============================================================
+INFO:utils:Starting audio merge
+INFO:utils:Chunks directory: meetings/19/chunks
+INFO:utils:Output path: meetings/19/final/19_merged.wav
+INFO:utils:Found 12 files to merge (sorted by timestamp):
+INFO:utils:  1. 11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav (168,245 bytes)
+INFO:utils:  2. 11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav (3,864 bytes)
+INFO:utils:  3. 11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav (3,864 bytes)
+INFO:utils:  4. 11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav (37,835 bytes)
+INFO:utils:  5. 11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav (137,333 bytes)
+INFO:utils:  6. 11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav (72,611 bytes)
+INFO:utils:  7. 11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav (68,747 bytes)
+INFO:utils:  8. 11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav (77,441 bytes)
+INFO:utils:  9. 11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav (77,441 bytes)
+INFO:utils:  10. 11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav (255,185 bytes)
+INFO:utils:  11. 11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav (483,162 bytes)
+INFO:utils:  12. 11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav (175,827 bytes)
+INFO:utils:Running ffmpeg command:
+INFO:utils:  ffmpeg -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav -filter_complex [0:a][1:a][2:a][3:a][4:a][5:a][6:a][7:a][8:a][9:a][10:a][11:a]concat=n=12:v=0:a=1[out] -map [out] -ar 16000 -ac 1 -y meetings/19/final/19_merged.wav
+ERROR:utils:============================================================
+ERROR:utils:ffmpeg error occurred!
+ERROR:utils:Return code: 1
+ERROR:utils:Command: ffmpeg -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav -i /home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav -filter_complex [0:a][1:a][2:a][3:a][4:a][5:a][6:a][7:a][8:a][9:a][10:a][11:a]concat=n=12:v=0:a=1[out] -map [out] -ar 16000 -ac 1 -y meetings/19/final/19_merged.wav
+ERROR:utils:stderr: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, matroska,webm, from '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav':
+  Metadata:
+    encoder         : Chrome
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp (default)
+/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav: Invalid data found when processing input
+
+ERROR:utils:============================================================
+ERROR:jobs:===== AUDIO MERGE JOB FAILED =====
+ERROR:jobs:Error: ffmpeg merge failed: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, matroska,webm, from '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav':
+  Metadata:
+    encoder         : Chrome
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp (default)
+/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav: Invalid data found when processing input
+Traceback (most recent call last):
+  File "/home/thuanld/cron-job/utils.py", line 140, in merge_audio_chunks
+    result = subprocess.run(
+  File "/usr/lib/python3.8/subprocess.py", line 516, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['ffmpeg', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__350861103f824bbb955d3ec194831d11.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-11-14__1__96afe7d9bc0847d9a7ee1dc04b948e0f.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-15-28__1__a7a6c9a68d3442ada6b76fee34808df6.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-04__1__0c2f484d6a1943cf8a42a895d197b59d.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-21-28__1__b64bb5990f6049cf816546f9f859e76b.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-28-38__5__ee4d04e77d324892afcb191dcc72a1e9.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-31-11__1__95b03788a9a14de9bd86635e23f4a220.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-34-20__1__ab86fa109ac44da38a1d700fe081522b.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-13__1__0835183c146c417c9f2a1b1afc4f79be.wav', '-i', '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-38-43__1__dc43348844664e2090c2569fe3c751ae.wav', '-filter_complex', '[0:a][1:a][2:a][3:a][4:a][5:a][6:a][7:a][8:a][9:a][10:a][11:a]concat=n=12:v=0:a=1[out]', '-map', '[out]', '-ar', '16000', '-ac', '1', '-y', 'meetings/19/final/19_merged.wav']' returned non-zero exit status 1.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/thuanld/cron-job/jobs.py", line 106, in merge_audio_job
+    merge_audio_chunks(chunks_dir, merged_audio_path)
+  File "/home/thuanld/cron-job/utils.py", line 179, in merge_audio_chunks
+    raise RuntimeError(f"ffmpeg merge failed: {e.stderr}")
+RuntimeError: ffmpeg merge failed: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, matroska,webm, from '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav':
+  Metadata:
+    encoder         : Chrome
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp (default)
+/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav: Invalid data found when processing input
+
+ERROR:jobs:===== COMPLETE MERGE JOB FAILED =====
+ERROR:jobs:Error: Audio merge failed: ffmpeg merge failed: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, matroska,webm, from '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav':
+  Metadata:
+    encoder         : Chrome
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp (default)
+/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav: Invalid data found when processing input
+Traceback (most recent call last):
+  File "/home/thuanld/cron-job/jobs.py", line 227, in enqueue_merge_job
+    raise RuntimeError(f"Audio merge failed: {audio_result.get('error')}")
+RuntimeError: Audio merge failed: ffmpeg merge failed: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+Input #0, matroska,webm, from '/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__05343051549c47a38d9c807cf4f8afd0.wav':
+  Metadata:
+    encoder         : Chrome
+  Duration: N/A, start: 0.000000, bitrate: N/A
+    Stream #0:0(eng): Audio: opus, 48000 Hz, mono, fltp (default)
+/home/thuanld/cron-job/meetings/19/chunks/11-11-2025_14-10-31__1__8f2ddbae888449d295318a984c928f16.wav: Invalid data found when processing input
+
+15:31:09 Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.131584s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+INFO:rq.worker:Successfully completed jobs.enqueue_merge_job('19') job in 0:00:00.131584s on worker 990377f887aa4fbb9e1e1a5e35ce207d
+15:31:09 meeting-jobs: Job OK (dab3f214-17f5-4651-b047-c196a7f7b3a0)
+INFO:rq.worker:meeting-jobs: Job OK (dab3f214-17f5-4651-b047-c196a7f7b3a0)
+15:31:09 Result is kept for 500 seconds
+INFO:rq.worker:Result is kept for 500 seconds
+15:37:54 Cleaning registries for queue: meeting-jobs
+15:51:25 Cleaning registries for queue: meeting-jobs
+16:04:55 Cleaning registries for queue: meeting-jobs

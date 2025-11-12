@@ -10,25 +10,31 @@ REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 r = Redis.from_url(REDIS_URL)
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 
+TEMP_FILE_EXTENSIONS = {".txt", ".tmp", ".log"}
+AUDIO_EXTENSIONS = {".wav", ".ogg", ".webm", ".m4a", ".mp3"}
+
+
 def merge_audio_chunks(chunks_dir, out_path):
     if not os.path.exists(chunks_dir):
         raise RuntimeError("Audio chunks directory does not exist")
     
-    # Xóa các file tạm trong chunks (list.txt, .txt, hoặc file conv nào đó)
-    for f in os.listdir(chunks_dir):
-        fpath = os.path.join(chunks_dir, f)
-        if os.path.isfile(fpath) and not f.lower().endswith(".wav"):
+    # Xóa các file tạm trong chunks (ví dụ: list.txt cũ, log, tmp)
+    for entry in os.listdir(chunks_dir):
+        entry_path = os.path.join(chunks_dir, entry)
+        if not os.path.isfile(entry_path):
+            continue
+        if Path(entry).suffix.lower() in TEMP_FILE_EXTENSIONS:
             try:
-                os.remove(fpath)
+                os.remove(entry_path)
             except Exception:
                 pass
     
-    # Lấy tất cả file .wav
-    wav_files = [
+    # Lấy tất cả file audio được hỗ trợ
+    audio_files = [
         f for f in os.listdir(chunks_dir)
-        if f.lower().endswith(".wav") and os.path.isfile(os.path.join(chunks_dir, f))
+        if os.path.isfile(os.path.join(chunks_dir, f)) and Path(f).suffix.lower() in AUDIO_EXTENSIONS
     ]
-    if not wav_files:
+    if not audio_files:
         raise RuntimeError("No audio chunks to merge")
     
     # Sort theo timestamp trong tên file (dd-mm-yyyy_HH-MM-SS)
@@ -41,11 +47,11 @@ def merge_audio_chunks(chunks_dir, out_path):
             # Nếu không parse được, dùng creation time làm fallback
             return datetime.fromtimestamp(os.path.getctime(os.path.join(chunks_dir, filename)))
     
-    wav_files.sort(key=parse_timestamp)
+    audio_files.sort(key=parse_timestamp)
     
     # Log số lượng file để merge
-    print(f"[merge_audio_chunks] Found {len(wav_files)} WAV files to merge")
-    for i, fname in enumerate(wav_files, 1):
+    print(f"[merge_audio_chunks] Found {len(audio_files)} audio files to merge")
+    for i, fname in enumerate(audio_files, 1):
         print(f"[merge_audio_chunks]   {i}. {fname}")
     
     # Tạo list.txt trong thư mục output (final), không phải trong chunks
@@ -55,11 +61,11 @@ def merge_audio_chunks(chunks_dir, out_path):
     
     try:
         with open(list_txt, "w", encoding="utf-8") as f:
-            for fname in wav_files:
+            for fname in audio_files:
                 fpath = Path(os.path.join(chunks_dir, fname)).resolve().as_posix()
                 f.write(f"file '{fpath}'\n")
         
-        print(f"[merge_audio_chunks] Created file list: {list_txt} with {len(wav_files)} files")
+        print(f"[merge_audio_chunks] Created file list: {list_txt} with {len(audio_files)} files")
         
         # Đảm bảo output là .ogg
         out_path_obj = Path(out_path)
@@ -87,6 +93,43 @@ def merge_audio_chunks(chunks_dir, out_path):
                 os.remove(list_txt)
             except Exception:
                 pass
+
+
+def convert_audio_to_ogg(src_path, dst_path=None, bitrate="64k"):
+    """
+    Chuẩn hóa một file audio bất kỳ sang .ogg (libopus) để tiện cho quá trình merge.
+    Trả về đường dẫn file đích (.ogg).
+    """
+    src = Path(src_path)
+    if not src.exists():
+        raise RuntimeError(f"Source audio file does not exist: {src_path}")
+    
+    if dst_path is None:
+        dst = src.with_suffix(".ogg")
+    else:
+        dst = Path(dst_path)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Nếu file đã là .ogg thì chỉ cần đổi tên (nếu cần)
+    if src.suffix.lower() == ".ogg" and src.resolve() == dst.resolve():
+        return str(dst)
+    
+    cmd = [
+        "ffmpeg", "-y", "-i", str(src),
+        "-c:a", "libopus", "-b:a", bitrate,
+        str(dst)
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"FFmpeg convert error: {result.stderr}")
+    
+    if src.resolve() != dst.resolve():
+        try:
+            os.remove(src)
+        except Exception:
+            pass
+    
+    return str(dst)
 
 def transcribe_with_whisper(filepath):
     try:

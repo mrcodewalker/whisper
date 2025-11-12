@@ -5,7 +5,8 @@ from flask_cors import CORS
 from rq import Queue
 from jobs import enqueue_stt_job, enqueue_merge_job
 from datetime import datetime
-import os, uuid
+import os, uuid, mimetypes
+from utils import convert_audio_to_ogg
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 redis_conn = Redis.from_url(REDIS_URL)
@@ -47,14 +48,33 @@ def stt_input():
             ts_dt = datetime.utcnow()
 
     ts_str = ts_dt.strftime("%d-%m-%Y_%H-%M-%S")  # dd-mm-yyyy_HH-MM-SS
-    fname = f"{ts_str}__{user_id}__{uuid.uuid4().hex}.wav"
-    path = os.path.join(chunks_dir, fname)
-    f.save(path)
+    base_name = f"{ts_str}__{user_id}__{uuid.uuid4().hex}"
+    
+    # Xác định extension gốc (nếu có)
+    original_ext = os.path.splitext(f.filename or "")[1].lower()
+    if not original_ext:
+        guessed_ext = mimetypes.guess_extension(f.mimetype or "") or ""
+        original_ext = guessed_ext.lower()
+    if not original_ext:
+        original_ext = ".tmp"
+    
+    temp_path = os.path.join(chunks_dir, base_name + original_ext)
+    f.save(temp_path)
+
+    try:
+        final_path = convert_audio_to_ogg(temp_path, os.path.join(chunks_dir, base_name + ".ogg"))
+    except RuntimeError as exc:
+        return jsonify({"error": "audio_conversion_failed", "details": str(exc)}), 500
 
     # Optional: enqueue STT job
     # job = q.enqueue(enqueue_stt_job, meeting_id, user_id, full_name, role, ts_str, path)
 
-    return jsonify({"status": "saved", "meeting_id": meeting_id, "user_id": user_id}), 202
+    return jsonify({
+        "status": "saved",
+        "meeting_id": meeting_id,
+        "user_id": user_id,
+        "file_path": final_path
+    }), 202
 
 
 @app.route("/api/meeting_files/<meeting_id>", methods=["GET"])

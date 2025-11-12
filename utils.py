@@ -32,17 +32,34 @@ def merge_audio_chunks(chunks_dir, out_path):
     
     files.sort(key=extract_timestamp)
     
-    # Đọc file đầu tiên để lấy thông số audio
-    first_file = os.path.join(chunks_dir, files[0])
+    # Tìm file WAV hợp lệ đầu tiên để lấy thông số
+    n_channels = None
+    sampwidth = None
+    framerate = None
+    valid_files = []
     
-    try:
-        with wave.open(first_file, 'rb') as first_wav:
-            params = first_wav.getparams()
-            n_channels = params.nchannels
-            sampwidth = params.sampwidth
-            framerate = params.framerate
-    except Exception as e:
-        raise RuntimeError(f"Cannot read first WAV file {files[0]}: {str(e)}")
+    print(f"Checking {len(files)} files...")
+    
+    for fname in files:
+        fpath = os.path.join(chunks_dir, fname)
+        try:
+            with wave.open(fpath, 'rb') as wav_file:
+                if n_channels is None:
+                    # File hợp lệ đầu tiên, lấy thông số
+                    params = wav_file.getparams()
+                    n_channels = params.nchannels
+                    sampwidth = params.sampwidth
+                    framerate = params.framerate
+                    print(f"Using audio params from {fname}: {n_channels}ch, {sampwidth}bytes, {framerate}Hz")
+                valid_files.append(fname)
+        except Exception as e:
+            print(f"WARNING: Skipping corrupted file {fname}: {str(e)}")
+            continue
+    
+    if not valid_files:
+        raise RuntimeError("No valid WAV files found to merge")
+    
+    print(f"Found {len(valid_files)} valid files out of {len(files)}")
     
     # Tạo file output
     try:
@@ -51,10 +68,11 @@ def merge_audio_chunks(chunks_dir, out_path):
             output.setsampwidth(sampwidth)
             output.setframerate(framerate)
             
-            # Ghi từng file vào output
-            for i, fname in enumerate(files):
+            merged_count = 0
+            # Ghi từng file hợp lệ vào output
+            for i, fname in enumerate(valid_files):
                 fpath = os.path.join(chunks_dir, fname)
-                print(f"Merging {i+1}/{len(files)}: {fname}")
+                print(f"Merging {i+1}/{len(valid_files)}: {fname}")
                 
                 try:
                     with wave.open(fpath, 'rb') as wav_file:
@@ -68,12 +86,13 @@ def merge_audio_chunks(chunks_dir, out_path):
                         # Đọc và ghi tất cả frames
                         frames = wav_file.readframes(wav_file.getnframes())
                         output.writeframes(frames)
+                        merged_count += 1
                         
                 except Exception as e:
                     print(f"ERROR reading {fname}: {str(e)}, skipping...")
                     continue
         
-        print(f"Successfully merged {len(files)} files to {out_path}")
+        print(f"Successfully merged {merged_count}/{len(files)} files to {out_path}")
         return out_path
         
     except Exception as e:

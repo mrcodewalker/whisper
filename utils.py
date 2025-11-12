@@ -6,6 +6,7 @@ from docx import Document
 import subprocess
 from pathlib import Path
 from typing import List, Dict, Any
+from uuid import uuid4
 
 SIGNATURE_SECRET = os.getenv("SIGNATURE_SECRET")
 
@@ -14,36 +15,50 @@ r = Redis.from_url(REDIS_URL)
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 
 def merge_audio_chunks(chunks_dir, output_base):
-    if not os.path.exists(chunks_dir):
+    chunks_path = Path(chunks_dir)
+    if not chunks_path.exists():
         raise RuntimeError("Audio chunks directory does not exist")
-    
-    files = sorted([f for f in os.listdir(chunks_dir) if f.endswith(".wav")])
-    if not files:
+
+    chunk_files = sorted([f for f in os.listdir(chunks_path) if f.lower().endswith(".wav")])
+    if not chunk_files:
         raise RuntimeError("No audio chunks to merge")
-    
-    files.sort(key=lambda x: x.split("__")[0])
-    
+
+    chunk_paths = []
+    missing_files = []
+    for fname in chunk_files:
+        file_path = chunks_path / fname
+        if file_path.exists():
+            chunk_paths.append(file_path.resolve())
+        else:
+            missing_files.append(str(file_path))
+
+    if missing_files:
+        raise RuntimeError(f"Missing audio chunk files: {', '.join(missing_files)}")
+
+    chunk_paths.sort(key=lambda p: p.name.split("__")[0])
+
     output_base_path = Path(output_base)
+    if not output_base_path.is_absolute():
+        output_base_path = output_base_path.resolve()
     if output_base_path.suffix:
         output_base_path = output_base_path.with_suffix("")
 
-    wav_path = str(output_base_path.with_suffix(".wav"))
-    ogg_path = str(output_base_path.with_suffix(".ogg"))
-    
-    list_txt = os.path.join(chunks_dir, "list.txt")
-    with open(list_txt, "w", encoding="utf-8") as f:
-        for fname in files:
-            fpath = os.path.abspath(os.path.join(chunks_dir, fname))
-            f.write(f"file '{fpath}'\n")
-    
+    wav_path = output_base_path.with_suffix(".wav")
+    ogg_path = output_base_path.with_suffix(".ogg")
+
+    list_txt = chunks_path / f"ffmpeg_concat_{uuid4().hex}.txt"
+    with list_txt.open("w", encoding="utf-8") as f:
+        for path in chunk_paths:
+            f.write(f"file '{path.as_posix()}'\n")
+
     cmd_wav = [
-        "ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_txt,
-        "-acodec", "pcm_s16le", "-ar", "48000", "-ac", "1", wav_path
+        "ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(list_txt),
+        "-acodec", "pcm_s16le", "-ar", "48000", "-ac", "1", str(wav_path)
     ]
 
     cmd_ogg = [
-        "ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_txt,
-        "-c:a", "libopus", "-b:a", "64k", ogg_path
+        "ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(list_txt),
+        "-c:a", "libopus", "-b:a", "64k", str(ogg_path)
     ]
 
     try:
@@ -55,10 +70,10 @@ def merge_audio_chunks(chunks_dir, output_base):
         if result_ogg.returncode != 0:
             raise RuntimeError(f"FFmpeg error when producing ogg: {result_ogg.stderr}")
     finally:
-        if os.path.exists(list_txt):
-            os.remove(list_txt)
-    
-    return {"wav": wav_path, "ogg": ogg_path}
+        if list_txt.exists():
+            list_txt.unlink()
+
+    return {"wav": str(wav_path), "ogg": str(ogg_path)}
 
 def transcribe_with_whisper(filepath):
     try:

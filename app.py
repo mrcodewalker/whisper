@@ -4,7 +4,6 @@ from redis import Redis
 from flask_cors import CORS
 from rq import Queue
 from jobs import enqueue_stt_job, enqueue_merge_job
-from utils import is_valid_wav_file
 from datetime import datetime
 import os, uuid
 
@@ -34,13 +33,6 @@ def stt_input():
 
     if not f or not meeting_id or not user_id:
         return jsonify({"error": "missing file or meeting_id or user_id"}), 400
-
-    if not is_valid_wav_file(f):
-        return jsonify({
-            "error": "Invalid WAV file - file does not start with RIFF header or is corrupted",
-            "meeting_id": meeting_id,
-            "user_id": user_id
-        }), 400
 
     meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
     chunks_dir = os.path.join(meeting_dir, "chunks")

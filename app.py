@@ -51,10 +51,23 @@ def stt_input():
     path = os.path.join(chunks_dir, fname)
     f.save(path)
 
-    # Optional: enqueue STT job
-    # job = q.enqueue(enqueue_stt_job, meeting_id, user_id, full_name, role, ts_str, path)
+    job = q.enqueue(
+        enqueue_stt_job,
+        meeting_id,
+        user_id,
+        full_name,
+        role,
+        ts_str,
+        path,
+        job_timeout=900,
+    )
 
-    return jsonify({"status": "saved", "meeting_id": meeting_id, "user_id": user_id}), 202
+    return jsonify({
+        "status": "saved",
+        "meeting_id": meeting_id,
+        "user_id": user_id,
+        "stt_job_id": job.id,
+    }), 202
 
 
 @app.route("/api/meeting_files/<meeting_id>", methods=["GET"])

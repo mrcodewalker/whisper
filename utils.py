@@ -14,48 +14,79 @@ def merge_audio_chunks(chunks_dir, out_path):
     if not os.path.exists(chunks_dir):
         raise RuntimeError("Audio chunks directory does not exist")
     
-    files = [
-        os.path.join(chunks_dir, f)
-        for f in os.listdir(chunks_dir)
-        if f.lower().endswith(".wav")
+    # Xóa các file tạm trong chunks (list.txt, .txt, hoặc file conv nào đó)
+    for f in os.listdir(chunks_dir):
+        fpath = os.path.join(chunks_dir, f)
+        if os.path.isfile(fpath) and not f.lower().endswith(".wav"):
+            try:
+                os.remove(fpath)
+            except Exception:
+                pass
+    
+    # Lấy tất cả file .wav
+    wav_files = [
+        f for f in os.listdir(chunks_dir)
+        if f.lower().endswith(".wav") and os.path.isfile(os.path.join(chunks_dir, f))
     ]
-    if not files:
+    if not wav_files:
         raise RuntimeError("No audio chunks to merge")
     
-    files.sort(key=os.path.getctime)
+    # Sort theo timestamp trong tên file (dd-mm-yyyy_HH-MM-SS)
+    def parse_timestamp(filename):
+        try:
+            # Format: dd-mm-yyyy_HH-MM-SS__user_id__uuid.wav
+            ts_part = filename.split("__")[0]
+            return datetime.strptime(ts_part, "%d-%m-%Y_%H-%M-%S")
+        except (ValueError, IndexError):
+            # Nếu không parse được, dùng creation time làm fallback
+            return datetime.fromtimestamp(os.path.getctime(os.path.join(chunks_dir, filename)))
     
-    list_txt = os.path.join(chunks_dir, "list.txt")
-    with open(list_txt, "w", encoding="utf-8") as f:
-        for fname in files:
-            fpath = Path(fname).resolve().as_posix()
-            f.write(f"file '{fpath}'\n")
+    wav_files.sort(key=parse_timestamp)
     
-    out_path_obj = Path(out_path)
-    if out_path_obj.suffix.lower() != ".ogg":
-        out_path_obj = out_path_obj.with_suffix(".ogg")
-    out_ogg = str(out_path_obj)
+    # Log số lượng file để merge
+    print(f"[merge_audio_chunks] Found {len(wav_files)} WAV files to merge")
+    for i, fname in enumerate(wav_files, 1):
+        print(f"[merge_audio_chunks]   {i}. {fname}")
+    
+    # Tạo list.txt trong thư mục output (final), không phải trong chunks
+    out_dir = os.path.dirname(out_path)
+    os.makedirs(out_dir, exist_ok=True)
+    list_txt = os.path.join(out_dir, "list.txt")
+    
+    try:
+        with open(list_txt, "w", encoding="utf-8") as f:
+            for fname in wav_files:
+                fpath = Path(os.path.join(chunks_dir, fname)).resolve().as_posix()
+                f.write(f"file '{fpath}'\n")
+        
+        print(f"[merge_audio_chunks] Created file list: {list_txt} with {len(wav_files)} files")
+        
+        # Đảm bảo output là .ogg
+        out_path_obj = Path(out_path)
+        if out_path_obj.suffix.lower() != ".ogg":
+            out_path_obj = out_path_obj.with_suffix(".ogg")
+        out_ogg = str(out_path_obj)
 
-    cmd = [
-    "ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_txt,
-    "-c:a", "libopus", "-b:a", "64k", out_ogg
-    ]
-    
-    #cmd = [
-    #"ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_txt,
-    #"-c", "copy", out_ogg
-    #]
-
-    
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    if result.returncode != 0:
-        raise RuntimeError(f"FFmpeg error: {result.stderr}")
-    if not os.path.exists(out_ogg):
-        raise RuntimeError(f"FFmpeg did not produce output file: {out_ogg}")
-    
-    if os.path.exists(list_txt):
-        os.remove(list_txt)
-    
-    return out_ogg
+        # Merge và convert sang ogg
+        cmd = [
+            "ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_txt,
+            "-c:a", "libopus", "-b:a", "64k", out_ogg
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            raise RuntimeError(f"FFmpeg error: {result.stderr}")
+        if not os.path.exists(out_ogg):
+            raise RuntimeError(f"FFmpeg did not produce output file: {out_ogg}")
+        
+        return out_ogg
+    finally:
+        # Luôn xóa file list.txt sau khi xong
+        if os.path.exists(list_txt):
+            try:
+                os.remove(list_txt)
+            except Exception:
+                pass
 
 def transcribe_with_whisper(filepath):
     try:

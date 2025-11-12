@@ -4,6 +4,7 @@ from redis import Redis
 from datetime import datetime
 from docx import Document
 import subprocess
+from pathlib import Path
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 r = Redis.from_url(REDIS_URL)
@@ -13,24 +14,26 @@ def merge_audio_chunks(chunks_dir, out_path):
     if not os.path.exists(chunks_dir):
         raise RuntimeError("Audio chunks directory does not exist")
     
-    files = sorted([f for f in os.listdir(chunks_dir) if f.endswith(".wav")])
+    files = [
+        os.path.join(chunks_dir, f)
+        for f in os.listdir(chunks_dir)
+        if f.lower().endswith(".wav")
+    ]
     if not files:
         raise RuntimeError("No audio chunks to merge")
     
-    files.sort(key=lambda x: x.split("__")[0])
+    files.sort(key=os.path.getctime)
     
     list_txt = os.path.join(chunks_dir, "list.txt")
     with open(list_txt, "w", encoding="utf-8") as f:
         for fname in files:
-            fpath = os.path.abspath(os.path.join(chunks_dir, fname))
+            fpath = Path(fname).resolve().as_posix()
             f.write(f"file '{fpath}'\n")
     
-    #cmd = [
-    #"ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_txt,
-    #"-acodec", "pcm_s16le", "-ar", "48000", "-ac", "1", out_path
-    #]
-
-    out_ogg = out_path.replace(".wav", ".ogg")
+    out_path_obj = Path(out_path)
+    if out_path_obj.suffix.lower() != ".ogg":
+        out_path_obj = out_path_obj.with_suffix(".ogg")
+    out_ogg = str(out_path_obj)
 
     cmd = [
     "ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_txt,
@@ -46,11 +49,13 @@ def merge_audio_chunks(chunks_dir, out_path):
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         raise RuntimeError(f"FFmpeg error: {result.stderr}")
+    if not os.path.exists(out_ogg):
+        raise RuntimeError(f"FFmpeg did not produce output file: {out_ogg}")
     
     if os.path.exists(list_txt):
         os.remove(list_txt)
     
-    return out_path
+    return out_ogg
 
 def transcribe_with_whisper(filepath):
     try:

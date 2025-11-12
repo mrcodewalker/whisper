@@ -26,7 +26,7 @@ def enqueue_merge_job(meeting_id):
     os.makedirs(final_dir, exist_ok=True)
     log_path = os.path.join(meeting_dir, "merge.log")
     timestamp = datetime.utcnow().strftime("%d-%m-%Y_%H-%M-%S")
-    merged_path = os.path.join(final_dir, f"merged_{timestamp}.wav")
+    merged_path = os.path.join(final_dir, f"merged_{timestamp}.ogg")
     
     with open(log_path, "a", encoding="utf-8") as log:
         log.write(f"\n=== Merge started at {datetime.utcnow()} ===\n")
@@ -35,13 +35,13 @@ def enqueue_merge_job(meeting_id):
         try:
             if not os.path.exists(chunks_dir) or not os.listdir(chunks_dir):
                 raise RuntimeError("No audio chunks to merge")
-            merge_audio_chunks(chunks_dir, merged_path)
+            merged_output = merge_audio_chunks(chunks_dir, merged_path)
             log.write(f"Merge completed successfully!\n")
-            log.write(f"Merged file: {merged_path}\n")
+            log.write(f"Merged file: {merged_output}\n")
         except Exception as e:
             log.write(f"Merge failed: {e}\n")
             raise
         finally:
             log.write(f"=== Merge ended at {datetime.utcnow()} ===\n")
     
-    return {"status": "merged", "output": merged_path}
+    return {"status": "merged", "output": merged_output}

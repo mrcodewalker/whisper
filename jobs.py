@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from utils import merge_audio_chunks, build_docx_and_pdf, build_transcript_from_cache
+from utils import merge_audio_chunks, build_docx_and_pdf
 from datetime import datetime
 
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
@@ -26,10 +26,8 @@ def enqueue_merge_job(meeting_id):
     os.makedirs(final_dir, exist_ok=True)
     log_path = os.path.join(meeting_dir, "merge.log")
     timestamp = datetime.utcnow().strftime("%d-%m-%Y_%H-%M-%S")
-    merged_path = os.path.join(final_dir, f"merged_{timestamp}.ogg")
+    merged_path = os.path.join(final_dir, f"merged_{timestamp}.wav")
     
-    docx_path = pdf_path = None
-
     with open(log_path, "a", encoding="utf-8") as log:
         log.write(f"\n=== Merge started at {datetime.utcnow()} ===\n")
         log.write(f"Chunks dir: {chunks_dir}\n")
@@ -37,28 +35,13 @@ def enqueue_merge_job(meeting_id):
         try:
             if not os.path.exists(chunks_dir) or not os.listdir(chunks_dir):
                 raise RuntimeError("No audio chunks to merge")
-            merged_output = merge_audio_chunks(chunks_dir, merged_path)
+            merge_audio_chunks(chunks_dir, merged_path)
             log.write(f"Merge completed successfully!\n")
-            log.write(f"Merged file: {merged_output}\n")
-
-            # Xây transcript DOCX/PDF từ cache
-            entries = build_transcript_from_cache(meeting_id)
-            if entries:
-                docx_path, pdf_path = build_docx_and_pdf(meeting_id, entries, final_dir)
-                log.write(f"Transcript entries: {len(entries)}\n")
-                log.write(f"DOCX created: {docx_path}\n")
-                log.write(f"PDF created: {pdf_path if pdf_path else 'conversion failed'}\n")
-            else:
-                log.write("No transcript cache entries found; skipping DOCX/PDF generation.\n")
+            log.write(f"Merged file: {merged_path}\n")
         except Exception as e:
             log.write(f"Merge failed: {e}\n")
             raise
         finally:
             log.write(f"=== Merge ended at {datetime.utcnow()} ===\n")
     
-    return {
-        "status": "merged",
-        "output": merged_output,
-        "docx": docx_path,
-        "pdf": pdf_path,
-    }
+    return {"status": "merged", "output": merged_path}

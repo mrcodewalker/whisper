@@ -211,3 +211,45 @@ Output file: meetings/19/final/merged_11-11-2025_10-19-36.wav
 Merge completed successfully!
 Merged file: meetings/19/final/merged_11-11-2025_10-19-36.wav
 === Merge ended at 2025-11-11 10:19:36.913785 ===
+
+=== Merge started at 2025-11-12 07:46:54.591282 ===
+Chunks dir: meetings/19/chunks
+Output file: meetings/19/final/merged_12-11-2025_07-46-54.ogg
+Merge completed successfully!
+Merged file: meetings/19/final/merged_12-11-2025_07-46-54.ogg
+=== Merge ended at 2025-11-12 07:46:54.929736 ===
+
+=== Merge started at 2025-11-12 07:52:09.001808 ===
+Chunks dir: meetings/19/chunks
+Output file: meetings/19/final/merged_12-11-2025_07-52-09.ogg
+Merge completed successfully!
+Merged file: meetings/19/final/merged_12-11-2025_07-52-09.ogg
+=== Merge ended at 2025-11-12 07:52:09.322906 ===
+
+=== Merge started at 2025-11-12 07:59:40.699063 ===
+Chunks dir: meetings/19/chunks
+Output file: meetings/19/final/merged_12-11-2025_07-59-40.ogg
+Merge completed successfully!
+Merged file: meetings/19/final/merged_12-11-2025_07-59-40.ogg
+No transcript cache entries found; skipping DOCX/PDF generation.
+=== Merge ended at 2025-11-12 07:59:41.014511 ===
+
+=== Merge started at 2025-11-12 08:18:14.708100 ===
+Chunks dir: meetings/19/chunks
+Output file: meetings/19/final/merged_12-11-2025_08-18-14.wav
+Merge failed: FFmpeg error: ffmpeg version 4.2.7-0ubuntu0.1 Copyright (c) 2000-2022 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-nvenc --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
+  libavresample   4.  0.  0 /  4.  0.  0
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
+[concat @ 0x55fcb0afb200] Impossible to open '/home/thuanld/cron-job/meetings/19/chunks/12-11-2025_15-12-16__1__d17856706f034654a33fb15e667f14fe.wav'
+meetings/19/chunks/list.txt: Invalid data found when processing input
+
+=== Merge ended at 2025-11-12 08:18:14.802373 ===

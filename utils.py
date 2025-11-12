@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os, json, hashlib, shutil, wave
+import os, json, hashlib, shutil, wave, struct, io
 from redis import Redis
 from datetime import datetime
 from docx import Document
@@ -7,6 +7,40 @@ from docx import Document
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 r = Redis.from_url(REDIS_URL)
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
+
+def is_valid_wav_file(file_obj):
+    """
+    Add WAV header validation - check for RIFF signature and basic structure
+    """
+    try:
+        file_obj.seek(0)
+        header = file_obj.read(12)
+        file_obj.seek(0)
+        
+        if len(header) < 12:
+            return False
+        
+        # Check RIFF signature
+        if header[0:4] != b'RIFF':
+            return False
+        
+        # Check WAVE signature
+        if header[8:12] != b'WAVE':
+            return False
+        
+        # Try to parse with wave module
+        try:
+            with wave.open(file_obj, 'rb') as w:
+                params = w.getparams()
+                if params.nchannels <= 0 or params.sampwidth <= 0 or params.framerate <= 0:
+                    return False
+            return True
+        except Exception:
+            return False
+            
+    except Exception as e:
+        print(f"WAV validation error: {e}")
+        return False
 
 def merge_audio_chunks(chunks_dir, out_path):
     """
@@ -44,6 +78,11 @@ def merge_audio_chunks(chunks_dir, out_path):
         fpath = os.path.join(chunks_dir, fname)
         try:
             with wave.open(fpath, 'rb') as wav_file:
+                with open(fpath, 'rb') as f:
+                    if not is_valid_wav_file(f):
+                        print(f"WARNING: {fname} has invalid RIFF header, skipping")
+                        continue
+                
                 if n_channels is None:
                     # File hợp lệ đầu tiên, lấy thông số
                     params = wav_file.getparams()

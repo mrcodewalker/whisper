@@ -125,28 +125,54 @@ def merge_audio():
     if not os.path.exists(chunks_dir) or not os.listdir(chunks_dir):
         return jsonify({"error": "no audio chunks found"}), 400
 
-    # Execute merge synchronously instead of queuing
+    # Enqueue merge job to run in background
     try:
-        result = enqueue_merge_job(meeting_id)
-        merged_file = result.get("output")
-        if merged_file and os.path.exists(merged_file):
-            return jsonify({
-                "status": "success",
-                "meeting_id": meeting_id,
-                "merged_file": merged_file,
-                "url": url_for('download_merged_file', meeting_id=meeting_id, filename=os.path.basename(merged_file), _external=True)
-            }), 200
-        else:
-            return jsonify({
-                "status": "failed",
-                "meeting_id": meeting_id,
-                "error": "Merge completed but no output file found"
-            }), 500
+        job = q.enqueue(enqueue_merge_job, meeting_id, job_timeout=3600)
+        return jsonify({
+            "status": "merge_queued",
+            "meeting_id": meeting_id,
+            "job_id": job.id,
+            "check_status_url": url_for('check_merge_status', job_id=job.id, _external=True)
+        }), 202
     except Exception as e:
         return jsonify({
             "status": "error",
             "meeting_id": meeting_id,
             "error": str(e)
+        }), 500
+
+
+@app.route("/api/merge_status/<job_id>", methods=["GET"])
+def check_merge_status(job_id):
+    try:
+        job = q.fetch_job(job_id)
+        if not job:
+            return jsonify({"error": "job not found"}), 404
+        
+        response = {
+            "job_id": job_id,
+            "status": job.get_status(),
+        }
+        
+        # If job is finished, include the result
+        if job.is_finished:
+            result = job.result
+            if result:
+                response["output"] = result.get("output")
+                if result.get("output"):
+                    response["url"] = url_for('download_merged_file', 
+                                            meeting_id=result.get("output", "").split("/")[1], 
+                                            filename=os.path.basename(result.get("output", "")), 
+                                            _external=True)
+        
+        # If job failed, include the error
+        if job.is_failed:
+            response["error"] = str(job.exc_info)
+        
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({
+            "error": f"Error checking job status: {str(e)}"
         }), 500
 
 

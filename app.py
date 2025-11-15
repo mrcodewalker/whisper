@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, jsonify, send_from_directory, url_for
-from redis import Redis
 from flask_cors import CORS
-from rq import Queue
-from jobs import enqueue_stt_job, enqueue_merge_job
+from jobs import enqueue_job
 from datetime import datetime
 import os, uuid
-
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-redis_conn = Redis.from_url(REDIS_URL)
-q = Queue("meeting-jobs", connection=redis_conn)
 
 app = Flask(__name__)
 allowed_origins = [
@@ -51,10 +45,10 @@ def stt_input():
     path = os.path.join(chunks_dir, fname)
     f.save(path)
 
-    # Enqueue STT job to transcribe the audio
+    # Enqueue STT job to transcribe the audio using Thread Pool
     try:
-        job = q.enqueue(enqueue_stt_job, meeting_id, user_id, full_name, role, ts_str, path, job_timeout=900)
-        return jsonify({"status": "saved", "meeting_id": meeting_id, "user_id": user_id, "job_id": job.id}), 202
+        enqueue_job("stt", meeting_id, user_id, full_name, role, ts_str, path)
+        return jsonify({"status": "saved", "meeting_id": meeting_id, "user_id": user_id}), 202
     except Exception as e:
         return jsonify({"status": "saved", "meeting_id": meeting_id, "user_id": user_id, "error": str(e)}), 202
 
@@ -127,55 +121,17 @@ def merge_audio():
     if not os.path.exists(chunks_dir) or not os.listdir(chunks_dir):
         return jsonify({"error": "no audio chunks found"}), 400
 
-    # Enqueue merge job to run in background
+    # Enqueue merge job to run in background using Thread Pool
     try:
-        job = q.enqueue(enqueue_merge_job, meeting_id, job_timeout=3600)
-        return jsonify({
-            "status": "merge_queued",
-            "meeting_id": meeting_id,
-            "job_id": job.id,
-            "check_status_url": url_for('check_merge_status', job_id=job.id, _external=True)
-        }), 202
+        enqueue_job("merge_audio", meeting_id)
+        return jsonify({"status": "merge_queued", "meeting_id": meeting_id}), 202
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "meeting_id": meeting_id,
-            "error": str(e)
-        }), 500
+        return jsonify({"status": "error", "meeting_id": meeting_id, "error": str(e)}), 500
 
 
 @app.route("/api/merge_status/<job_id>", methods=["GET"])
 def check_merge_status(job_id):
-    try:
-        job = q.fetch_job(job_id)
-        if not job:
-            return jsonify({"error": "job not found"}), 404
-        
-        response = {
-            "job_id": job_id,
-            "status": job.get_status(),
-        }
-        
-        # If job is finished, include the result
-        if job.is_finished:
-            result = job.result
-            if result:
-                response["output"] = result.get("output")
-                if result.get("output"):
-                    response["url"] = url_for('download_merged_file', 
-                                            meeting_id=result.get("output", "").split("/")[1], 
-                                            filename=os.path.basename(result.get("output", "")), 
-                                            _external=True)
-        
-        # If job failed, include the error
-        if job.is_failed:
-            response["error"] = str(job.exc_info)
-        
-        return jsonify(response), 200
-    except Exception as e:
-        return jsonify({
-            "error": f"Error checking job status: {str(e)}"
-        }), 500
+    return jsonify({"error": "merge status checking is not available with Thread Pool"}), 501
 
 
 @app.route("/api/merge_transcript", methods=["POST"])
@@ -197,13 +153,11 @@ def merge_transcript():
         
         # Enqueue merge transcript job
         from jobs import enqueue_merge_transcript_job
-        job = q.enqueue(enqueue_merge_transcript_job, meeting_id, job_timeout=600)
+        enqueue_job("merge_transcript", meeting_id)
         
         return jsonify({
             "status": "merge_transcript_queued",
-            "meeting_id": meeting_id,
-            "job_id": job.id,
-            "check_status_url": url_for('check_merge_transcript_status', job_id=job.id, _external=True)
+            "meeting_id": meeting_id
         }), 202
     except Exception as e:
         return jsonify({
@@ -215,37 +169,7 @@ def merge_transcript():
 
 @app.route("/api/merge_transcript_status/<job_id>", methods=["GET"])
 def check_merge_transcript_status(job_id):
-    """
-    Check status of merge transcript job
-    """
-    try:
-        job = q.fetch_job(job_id)
-        if not job:
-            return jsonify({"error": "job not found"}), 404
-        
-        response = {
-            "job_id": job_id,
-            "status": job.get_status(),
-        }
-        
-        if job.is_finished:
-            result = job.result
-            if result:
-                response["output"] = result.get("output")
-                if result.get("output"):
-                    meeting_id = result.get("meeting_id")
-                    filename = os.path.basename(result.get("output", ""))
-                    response["download_url"] = url_for('download_transcript_file', 
-                                                      meeting_id=meeting_id, 
-                                                      filename=filename, 
-                                                      _external=True)
-        
-        if job.is_failed:
-            response["error"] = str(job.exc_info)
-        
-        return jsonify(response), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "merge transcript status checking is not available with Thread Pool"}), 501
 
 
 @app.route("/api/transcript_file/<meeting_id>/<filename>", methods=["GET"])
@@ -260,28 +184,7 @@ def download_transcript_file(meeting_id, filename):
 @app.route("/api/queue_status", methods=["GET"])
 def queue_status():
     """API to get the status of all jobs in the queue."""
-    try:
-        from jobs import job_queue
-
-        # Get all jobs in the queue
-        jobs = list(job_queue.queue)
-        job_list = []
-        for job in jobs:
-            job_type, args, kwargs = job
-            job_list.append({
-                "job_type": job_type,
-                "args": args,
-                "kwargs": kwargs
-            })
-
-        return jsonify({
-            "status": "success",
-            "queue_size": job_queue.qsize(),
-            "jobs": job_list
-        }), 200
-
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    return jsonify({"error": "queue status checking is not available with Thread Pool"}), 501
 
 
 if __name__ == "__main__":

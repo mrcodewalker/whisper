@@ -59,9 +59,14 @@ def stt_input():
 
 @app.route("/api/meeting_files/<meeting_id>", methods=["GET"])
 def list_meeting_files(meeting_id):
-    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id, "chunks")
+    file_type = request.args.get("type", "chunks").lower()
+    
+    if file_type not in ["chunks", "final"]:
+        return jsonify({"error": "type must be 'chunks' or 'final'"}), 400
+    
+    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id, file_type)
     if not os.path.exists(meeting_dir):
-        return jsonify({"error": "meeting_id not found"}), 404
+        return jsonify({"error": f"meeting_id not found or {file_type} folder does not exist"}), 404
 
     files = []
     for fname in os.listdir(meeting_dir):
@@ -73,20 +78,35 @@ def list_meeting_files(meeting_id):
                 date_str = dt.strftime("%d/%m/%Y %H:%M:%S")
             except Exception:
                 date_str = ""
-
-            file_url = url_for('download_meeting_file', meeting_id=meeting_id, filename=fname, _external=True)
+            
+            file_size = os.path.getsize(fpath)
+            
+            if file_type == "chunks":
+                file_url = url_for('download_meeting_file', meeting_id=meeting_id, filename=fname, _external=True)
+            else:  # final
+                file_url = url_for('download_merged_file', meeting_id=meeting_id, filename=fname, _external=True)
+            
             files.append({
                 "filename": fname,
                 "date": date_str,
+                "size": file_size,
                 "url": file_url
             })
 
-    return jsonify({"meeting_id": meeting_id, "files": files})
+    return jsonify({"meeting_id": meeting_id, "type": file_type, "files": files})
 
 
 @app.route("/api/meeting_files/<meeting_id>/<filename>", methods=["GET"])
 def download_meeting_file(meeting_id, filename):
     meeting_dir = os.path.join(MEETINGS_DIR, meeting_id, "chunks")
+    if not os.path.exists(os.path.join(meeting_dir, filename)):
+        return jsonify({"error": "file not found"}), 404
+    return send_from_directory(meeting_dir, filename, as_attachment=True)
+
+
+@app.route("/api/merged_file/<meeting_id>/<filename>", methods=["GET"])
+def download_merged_file(meeting_id, filename):
+    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id, "final")
     if not os.path.exists(os.path.join(meeting_dir, filename)):
         return jsonify({"error": "file not found"}), 404
     return send_from_directory(meeting_dir, filename, as_attachment=True)
@@ -105,9 +125,29 @@ def merge_audio():
     if not os.path.exists(chunks_dir) or not os.listdir(chunks_dir):
         return jsonify({"error": "no audio chunks found"}), 400
 
-    # Enqueue job merge
-    job = q.enqueue(enqueue_merge_job, meeting_id, job_timeout=3600)
-    return jsonify({"status": "merge_queued", "job_id": job.id}), 202
+    # Execute merge synchronously instead of queuing
+    try:
+        result = enqueue_merge_job(meeting_id)
+        merged_file = result.get("output")
+        if merged_file and os.path.exists(merged_file):
+            return jsonify({
+                "status": "success",
+                "meeting_id": meeting_id,
+                "merged_file": merged_file,
+                "url": url_for('download_merged_file', meeting_id=meeting_id, filename=os.path.basename(merged_file), _external=True)
+            }), 200
+        else:
+            return jsonify({
+                "status": "failed",
+                "meeting_id": meeting_id,
+                "error": "Merge completed but no output file found"
+            }), 500
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "meeting_id": meeting_id,
+            "error": str(e)
+        }), 500
 
 
 if __name__ == "__main__":

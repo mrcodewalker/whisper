@@ -3,10 +3,109 @@ import os, json, hashlib, shutil, wave
 from redis import Redis
 from datetime import datetime
 from docx import Document
+from pydub import AudioSegment
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 r = Redis.from_url(REDIS_URL)
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
+
+def merge_audio_chunks_direct(chunks_dir, out_path, log_file=None):
+    """
+    Merge all audio files (.wav, .ogg, .m4a, etc.) directly to OGG format using pydub.
+    This avoids ffmpeg concat issues with opus codec.
+    
+    Args:
+        chunks_dir: Directory containing audio chunks
+        out_path: Output file path (should end with .ogg)
+        log_file: Optional log file path to write detailed logs
+    """
+    def log_msg(msg):
+        print(msg)
+        if log_file:
+            try:
+                with open(log_file, "a", encoding="utf-8") as f:
+                    f.write(msg + "\n")
+                    f.flush()
+            except:
+                pass
+    
+    if not os.path.exists(chunks_dir):
+        raise RuntimeError("Audio chunks directory does not exist")
+    
+    # Get all audio files
+    audio_files = []
+    for f in os.listdir(chunks_dir):
+        if f.lower().endswith(('.wav', '.ogg', '.mp3', '.m4a', '.flac', '.opus')):
+            audio_files.append(f)
+    
+    if not audio_files:
+        raise RuntimeError("No audio chunks to merge")
+    
+    # Sort by timestamp
+    def extract_timestamp(filename):
+        try:
+            date_part = filename.split("__")[0]
+            dt = datetime.strptime(date_part, "%d-%m-%Y_%H-%M-%S")
+            return dt
+        except:
+            return datetime.min
+    
+    audio_files.sort(key=extract_timestamp)
+    log_msg(f"Found {len(audio_files)} audio files to merge")
+    
+    # Merge all audio files
+    merged_audio = None
+    successful_merges = 0
+    
+    for i, fname in enumerate(audio_files):
+        fpath = os.path.join(chunks_dir, fname)
+        try:
+            log_msg(f"Processing {i+1}/{len(audio_files)}: {fname}")
+            
+            # Load audio with pydub (supports multiple formats)
+            audio = AudioSegment.from_file(fpath)
+            
+            if merged_audio is None:
+                merged_audio = audio
+                log_msg(f"  -> Initialized with {audio.duration_seconds:.2f}s ({audio.channels}ch, {audio.frame_rate}Hz)")
+            else:
+                # Make sure same format before concatenating
+                if audio.frame_rate != merged_audio.frame_rate:
+                    audio = audio.set_frame_rate(merged_audio.frame_rate)
+                if audio.channels != merged_audio.channels:
+                    audio = audio.set_channels(merged_audio.channels)
+                
+                merged_audio += audio
+                log_msg(f"  -> Added {audio.duration_seconds:.2f}s, total now: {merged_audio.duration_seconds:.2f}s")
+            
+            successful_merges += 1
+            
+        except Exception as e:
+            log_msg(f"  -> WARNING: Failed to process {fname}: {str(e)}")
+            continue
+    
+    if merged_audio is None:
+        raise RuntimeError("Failed to merge any audio files")
+    
+    log_msg(f"\nSuccessfully merged {successful_merges}/{len(audio_files)} files")
+    log_msg(f"Total duration: {merged_audio.duration_seconds:.2f} seconds")
+    
+    # Export to OGG format
+    try:
+        log_msg(f"\nExporting to OGG format: {out_path}")
+        # Create output directory if needed
+        os.makedirs(os.path.dirname(out_path) if os.path.dirname(out_path) else ".", exist_ok=True)
+        merged_audio.export(out_path, format="ogg", bitrate="128k", codec="libvorbis", parameters=["-q:a", "7"])
+        log_msg(f"OGG export completed successfully!")
+        log_msg(f"Output file size: {os.path.getsize(out_path) / (1024*1024):.2f} MB")
+        return out_path
+        
+    except Exception as e:
+        log_msg(f"ERROR during OGG export: {str(e)}")
+        if os.path.exists(out_path):
+            os.remove(out_path)
+        raise RuntimeError(f"Failed to export OGG: {str(e)}")
+
 
 def merge_audio_chunks(chunks_dir, out_path):
     if not os.path.exists(chunks_dir):

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-from utils import merge_audio_chunks, build_docx_and_pdf
+from utils import merge_audio_chunks_direct, build_docx_and_pdf
 from datetime import datetime
-from pydub import AudioSegment
 
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 
@@ -28,7 +27,6 @@ def enqueue_merge_job(meeting_id):
     final_dir = os.path.join(meeting_dir, "final")
     log_path = os.path.join(meeting_dir, "merge.log")
     timestamp = datetime.utcnow().strftime("%d-%m-%Y_%H-%M-%S")
-    merged_wav_path = None
     merged_ogg_path = None
     
     try:
@@ -48,9 +46,7 @@ def enqueue_merge_job(meeting_id):
                 if not os.listdir(chunks_dir):
                     raise RuntimeError("No audio chunks to merge")
                 
-                merged_wav_path = os.path.join(final_dir, f"merged_{timestamp}.wav")
                 merged_ogg_path = os.path.join(final_dir, f"merged_{timestamp}.ogg")
-                log.write(f"Output WAV file: {merged_wav_path}\n")
                 log.write(f"Output OGG file: {merged_ogg_path}\n")
                 log.flush()
                 
@@ -71,34 +67,12 @@ def enqueue_merge_job(meeting_id):
                     log.write(f"Error deleting old OGG files: {e}\n")
                     log.flush()
 
-                log.write("Starting WAV merge...\n")
+                log.write("Starting audio merge with direct format conversion...\n")
                 log.flush()
-                merge_audio_chunks(chunks_dir, merged_wav_path)
-                log.write(f"WAV merge completed successfully!\n")
-                log.write(f"Merged WAV file: {merged_wav_path}\n")
+                merge_audio_chunks_direct(chunks_dir, merged_ogg_path, log_file=log_path)
+                log.write(f"Merge and OGG conversion completed successfully!\n")
+                log.write(f"Merged OGG file: {merged_ogg_path}\n")
                 log.flush()
-
-                log.write("Starting OGG conversion...\n")
-                log.flush()
-                try:
-                    audio = AudioSegment.from_wav(merged_wav_path)
-                    audio.export(merged_ogg_path, format="ogg", bitrate="128k")
-                    log.write("OGG conversion completed successfully!\n")
-                    log.write(f"Merged OGG file: {merged_ogg_path}\n")
-                    log.flush()
-
-                    if os.path.exists(merged_wav_path):
-                        os.remove(merged_wav_path)
-                        log.write(f"Temporary WAV file removed: {merged_wav_path}\n")
-                        log.flush()
-                except Exception as e:
-                    log.write(f"OGG conversion failed: {e}\n")
-                    log.write(f"Error type: {type(e).__name__}\n")
-                    import traceback
-                    log.write(f"Traceback: {traceback.format_exc()}\n")
-                    log.write(f"Keeping WAV file: {merged_wav_path}\n")
-                    log.flush()
-                    raise
 
             except Exception as e:
                 log.write(f"Merge failed: {e}\n")
@@ -127,5 +101,5 @@ def enqueue_merge_job(meeting_id):
 
     return {
         "status": "merged",
-        "output": merged_ogg_path if merged_ogg_path and os.path.exists(merged_ogg_path) else (merged_wav_path if merged_wav_path and os.path.exists(merged_wav_path) else None)
+        "output": merged_ogg_path if merged_ogg_path and os.path.exists(merged_ogg_path) else None
     }

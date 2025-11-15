@@ -9,6 +9,24 @@ REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 r = Redis.from_url(REDIS_URL)
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 
+# Global model cache
+_whisper_model = None
+
+def get_whisper_model(model_name="base"):
+    """
+    Get cached Whisper model to avoid reloading every time
+    """
+    global _whisper_model
+    if _whisper_model is None:
+        try:
+            import whisper
+            print(f"Loading Whisper model '{model_name}'...")
+            _whisper_model = whisper.load_model(model_name)
+            print(f"Model loaded successfully!")
+        except Exception as e:
+            raise RuntimeError("Failed to load whisper model: " + str(e))
+    return _whisper_model
+
 def merge_audio_chunks_direct(chunks_dir, out_path, log_file=None):
     """
     Merge all audio files (.wav, .ogg, .m4a, etc.) directly to OGG format using pydub.
@@ -189,11 +207,15 @@ def merge_audio_chunks(chunks_dir, out_path):
 
 
 def transcribe_with_whisper(filepath):
+    """
+    Transcribe audio file using Whisper model with caching
+    """
     try:
         import whisper
     except Exception as e:
         raise RuntimeError("whisper package not installed: " + str(e))
-    model = whisper.load_model("base")
+    
+    model = get_whisper_model("base")
     result = model.transcribe(filepath)
     return result.get("text", "").strip()
 

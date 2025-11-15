@@ -51,10 +51,12 @@ def stt_input():
     path = os.path.join(chunks_dir, fname)
     f.save(path)
 
-    # Optional: enqueue STT job
-    # job = q.enqueue(enqueue_stt_job, meeting_id, user_id, full_name, role, ts_str, path)
-
-    return jsonify({"status": "saved", "meeting_id": meeting_id, "user_id": user_id}), 202
+    # Enqueue STT job to transcribe the audio
+    try:
+        job = q.enqueue(enqueue_stt_job, meeting_id, user_id, full_name, role, ts_str, path, job_timeout=900)
+        return jsonify({"status": "saved", "meeting_id": meeting_id, "user_id": user_id, "job_id": job.id}), 202
+    except Exception as e:
+        return jsonify({"status": "saved", "meeting_id": meeting_id, "user_id": user_id, "error": str(e)}), 202
 
 
 @app.route("/api/meeting_files/<meeting_id>", methods=["GET"])
@@ -174,6 +176,85 @@ def check_merge_status(job_id):
         return jsonify({
             "error": f"Error checking job status: {str(e)}"
         }), 500
+
+
+@app.route("/api/merge_transcript", methods=["POST"])
+def merge_transcript():
+    """
+    Merge all transcripts from cache and create a DOCX file
+    """
+    j = request.get_json() or {}
+    meeting_id = j.get("meeting_id")
+    
+    if not meeting_id:
+        return jsonify({"error": "missing meeting_id"}), 400
+    
+    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
+    final_dir = os.path.join(meeting_dir, "final")
+    
+    try:
+        os.makedirs(final_dir, exist_ok=True)
+        
+        # Enqueue merge transcript job
+        from jobs import enqueue_merge_transcript_job
+        job = q.enqueue(enqueue_merge_transcript_job, meeting_id, job_timeout=600)
+        
+        return jsonify({
+            "status": "merge_transcript_queued",
+            "meeting_id": meeting_id,
+            "job_id": job.id,
+            "check_status_url": url_for('check_merge_transcript_status', job_id=job.id, _external=True)
+        }), 202
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "meeting_id": meeting_id,
+            "error": str(e)
+        }), 500
+
+
+@app.route("/api/merge_transcript_status/<job_id>", methods=["GET"])
+def check_merge_transcript_status(job_id):
+    """
+    Check status of merge transcript job
+    """
+    try:
+        job = q.fetch_job(job_id)
+        if not job:
+            return jsonify({"error": "job not found"}), 404
+        
+        response = {
+            "job_id": job_id,
+            "status": job.get_status(),
+        }
+        
+        if job.is_finished:
+            result = job.result
+            if result:
+                response["output"] = result.get("output")
+                if result.get("output"):
+                    meeting_id = result.get("meeting_id")
+                    filename = os.path.basename(result.get("output", ""))
+                    response["download_url"] = url_for('download_transcript_file', 
+                                                      meeting_id=meeting_id, 
+                                                      filename=filename, 
+                                                      _external=True)
+        
+        if job.is_failed:
+            response["error"] = str(job.exc_info)
+        
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/transcript_file/<meeting_id>/<filename>", methods=["GET"])
+def download_transcript_file(meeting_id, filename):
+    """Download transcript DOCX file"""
+    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id, "final")
+    if not os.path.exists(os.path.join(meeting_dir, filename)):
+        return jsonify({"error": "file not found"}), 404
+    return send_from_directory(meeting_dir, filename, as_attachment=True)
 
 
 if __name__ == "__main__":

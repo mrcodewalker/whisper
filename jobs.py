@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from utils import merge_audio_chunks_direct, build_docx_and_pdf
+from utils import merge_audio_chunks_direct, build_docx_and_pdf, build_transcript_from_cache
 from datetime import datetime
 
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
@@ -19,6 +19,55 @@ def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
     }
     append_transcript_cache(meeting_id, entry)
     return {"meeting_id": meeting_id, "user_id": user_id, "text_len": len(text)}
+
+
+def enqueue_merge_transcript_job(meeting_id):
+    """
+    Merge all transcripts from Redis cache and create DOCX file
+    """
+    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
+    final_dir = os.path.join(meeting_dir, "final")
+    timestamp = datetime.utcnow().strftime("%d-%m-%Y_%H-%M-%S")
+    
+    try:
+        os.makedirs(final_dir, exist_ok=True)
+        
+        # Get transcripts from cache
+        entries = build_transcript_from_cache(meeting_id)
+        
+        if not entries:
+            raise RuntimeError("No transcripts found in cache")
+        
+        # Create DOCX file
+        docx_path = os.path.join(final_dir, f"transcript_{meeting_id}_{timestamp}.docx")
+        
+        from docx import Document
+        doc = Document()
+        doc.add_heading(f"Bien ban cuoc hop: {meeting_id}", level=1)
+        doc.add_paragraph(f"Created: {datetime.utcnow().strftime('%d/%m/%Y %H:%M:%S UTC')}")
+        doc.add_paragraph("")
+        
+        for e in entries:
+            ts_str = e.get("ts", "")
+            full_name = e.get("full_name", "Unknown")
+            role = e.get("role", "")
+            text = e.get("text", "")
+            line = f"({ts_str}) {full_name} - {role}: {text}"
+            doc.add_paragraph(line)
+        
+        doc.save(docx_path)
+        
+        return {
+            "status": "transcript_created",
+            "meeting_id": meeting_id,
+            "output": docx_path,
+            "total_transcripts": len(entries)
+        }
+        
+    except Exception as e:
+        import traceback
+        error_msg = f"Merge transcript failed: {str(e)}\n{traceback.format_exc()}"
+        raise RuntimeError(error_msg)
 
 
 def enqueue_merge_job(meeting_id):

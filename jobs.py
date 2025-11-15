@@ -60,11 +60,12 @@ def enqueue_job(job_type, *args, **kwargs):
     job_queue.put((job_type, args, kwargs))
     logger.info(f"📥 Job enqueued: {job_type}")
 
-# Initialize Whisper model globally
-from utils import load_whisper_model
+# Correct the import to use the existing function in utils.py
+from utils import get_whisper_model
 
+# Initialize Whisper model globally
 # Load the Whisper model once at the start
-WHISPER_MODEL = load_whisper_model()
+WHISPER_MODEL = get_whisper_model()
 
 def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
     """
@@ -75,9 +76,9 @@ def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
 
         from utils import transcribe_with_whisper, append_transcript_cache
 
-        # Transcribe audio using the global model
+        # Transcribe audio using the cached Whisper model
         logger.info(f"Transcribing {filepath}...")
-        text = transcribe_with_whisper(filepath, model=WHISPER_MODEL)
+        text = transcribe_with_whisper(filepath)
         logger.info(f"Transcription complete. Text length: {len(text)}")
 
         # Create entry

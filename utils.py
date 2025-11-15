@@ -12,7 +12,7 @@ MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 # Global model cache
 _whisper_model = None
 
-def get_whisper_model(model_name="base"):
+def get_whisper_model(model_name="medium"):
     """
     Get cached Whisper model to avoid reloading every time
     """

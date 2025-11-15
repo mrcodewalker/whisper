@@ -137,24 +137,25 @@ def check_merge_status(job_id):
 @app.route("/api/merge_transcript", methods=["POST"])
 def merge_transcript():
     """
-    Merge all transcripts from cache and create a DOCX file
+    Merge all transcripts from cache and create a DOCX file.
+    Ensure all STT jobs are completed before merging.
     """
     j = request.get_json() or {}
     meeting_id = j.get("meeting_id")
-    
+
     if not meeting_id:
         return jsonify({"error": "missing meeting_id"}), 400
-    
+
     meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
     final_dir = os.path.join(meeting_dir, "final")
-    
+
     try:
         os.makedirs(final_dir, exist_ok=True)
-        
+
         # Enqueue merge transcript job
         from jobs import enqueue_merge_transcript_job
         enqueue_job("merge_transcript", meeting_id)
-        
+
         return jsonify({
             "status": "merge_transcript_queued",
             "meeting_id": meeting_id

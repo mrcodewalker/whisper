@@ -1,0 +1,19 @@
+
+=== Merge started at 2025-11-13 08:46:11.858538 ===
+Chunks dir: meetings/23/chunks
+Output WAV file: meetings/23/final/merged_13-11-2025_08-46-11.wav
+Output OGG file: meetings/23/final/merged_13-11-2025_08-46-11.ogg
+WAV merge completed successfully!
+Merged WAV file: meetings/23/final/merged_13-11-2025_08-46-11.wav
+OGG conversion completed successfully!
+Merged OGG file: meetings/23/final/merged_13-11-2025_08-46-11.ogg
+Temporary WAV file removed: meetings/23/final/merged_13-11-2025_08-46-11.wav
+
+=== Building Word document from transcripts cache ===
+Cache key: meeting:23:transcripts
+Found 0 transcript entries in cache
+⚠ No transcripts in cache - check if:
+  1. Worker processed audio files (check cron_worker.py logs)
+  2. Redis connection is working
+  3. Cache key exists: meeting:23:transcripts
+=== Merge ended at 2025-11-13 08:46:22.608521 ===

@@ -1,0 +1,28 @@
+
+=== Merge started at 2025-11-13 07:49:10.096124 ===
+Chunks dir: meetings/22/chunks
+Output WAV file: meetings/22/final/merged_13-11-2025_07-49-10.wav
+Output OGG file: meetings/22/final/merged_13-11-2025_07-49-10.ogg
+WAV merge completed successfully!
+Merged WAV file: meetings/22/final/merged_13-11-2025_07-49-10.wav
+OGG conversion completed successfully!
+Merged OGG file: meetings/22/final/merged_13-11-2025_07-49-10.ogg
+Temporary WAV file removed: meetings/22/final/merged_13-11-2025_07-49-10.wav
+
+=== Building Word document from transcripts cache ===
+No transcripts in cache, skipping Word document generation
+=== Merge ended at 2025-11-13 07:49:10.526094 ===
+
+=== Merge started at 2025-11-13 07:54:07.880216 ===
+Chunks dir: meetings/22/chunks
+Output WAV file: meetings/22/final/merged_13-11-2025_07-54-07.wav
+Output OGG file: meetings/22/final/merged_13-11-2025_07-54-07.ogg
+WAV merge completed successfully!
+Merged WAV file: meetings/22/final/merged_13-11-2025_07-54-07.wav
+OGG conversion completed successfully!
+Merged OGG file: meetings/22/final/merged_13-11-2025_07-54-07.ogg
+Temporary WAV file removed: meetings/22/final/merged_13-11-2025_07-54-07.wav
+
+=== Building Word document from transcripts cache ===
+No transcripts in cache, skipping Word document generation
+=== Merge ended at 2025-11-13 07:54:09.015389 ===

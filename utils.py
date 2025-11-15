@@ -9,19 +9,13 @@ r = Redis.from_url(REDIS_URL)
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 
 def merge_audio_chunks(chunks_dir, out_path):
-    """
-    Ghép các file WAV theo thứ tự thời gian tăng dần
-    Không cần ffmpeg, chỉ dùng thư viện wave có sẵn
-    """
     if not os.path.exists(chunks_dir):
         raise RuntimeError("Audio chunks directory does not exist")
     
-    # Lấy tất cả file WAV
     files = [f for f in os.listdir(chunks_dir) if f.endswith(".wav")]
     if not files:
         raise RuntimeError("No audio chunks to merge")
     
-    # Sắp xếp theo timestamp trong tên file (dd-mm-yyyy_HH-MM-SS)
     def extract_timestamp(filename):
         try:
             date_part = filename.split("__")[0]  # Lấy phần timestamp
@@ -32,7 +26,6 @@ def merge_audio_chunks(chunks_dir, out_path):
     
     files.sort(key=extract_timestamp)
     
-    # Tìm file WAV hợp lệ đầu tiên để lấy thông số
     n_channels = None
     sampwidth = None
     framerate = None
@@ -45,7 +38,6 @@ def merge_audio_chunks(chunks_dir, out_path):
         try:
             with wave.open(fpath, 'rb') as wav_file:
                 if n_channels is None:
-                    # File hợp lệ đầu tiên, lấy thông số
                     params = wav_file.getparams()
                     n_channels = params.nchannels
                     sampwidth = params.sampwidth
@@ -61,7 +53,6 @@ def merge_audio_chunks(chunks_dir, out_path):
     
     print(f"Found {len(valid_files)} valid files out of {len(files)}")
     
-    # Tạo file output
     try:
         with wave.open(out_path, 'wb') as output:
             output.setnchannels(n_channels)
@@ -69,21 +60,18 @@ def merge_audio_chunks(chunks_dir, out_path):
             output.setframerate(framerate)
             
             merged_count = 0
-            # Ghi từng file hợp lệ vào output
             for i, fname in enumerate(valid_files):
                 fpath = os.path.join(chunks_dir, fname)
                 print(f"Merging {i+1}/{len(valid_files)}: {fname}")
                 
                 try:
                     with wave.open(fpath, 'rb') as wav_file:
-                        # Kiểm tra params có khớp không
                         if (wav_file.getnchannels() != n_channels or
                             wav_file.getsampwidth() != sampwidth or
                             wav_file.getframerate() != framerate):
                             print(f"WARNING: {fname} has different audio parameters, skipping...")
                             continue
                         
-                        # Đọc và ghi tất cả frames
                         frames = wav_file.readframes(wav_file.getnframes())
                         output.writeframes(frames)
                         merged_count += 1

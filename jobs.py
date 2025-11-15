@@ -20,7 +20,7 @@ class JobWorker(threading.Thread):
     def __init__(self):
         super().__init__(daemon=True)
         self.running = True
-    
+
     def run(self):
         logger.info("🔄 Job Worker started")
         while self.running:
@@ -28,24 +28,28 @@ class JobWorker(threading.Thread):
                 # Lấy job từ queue
                 job_type, args, kwargs = job_queue.get(timeout=1)
                 logger.info(f"⚙️ Processing job: {job_type} with args={args}")
-                
-                # Xử lý từng loại job
+
+                # Xử lý từng loại job theo thứ tự
                 if job_type == "stt":
                     result = enqueue_stt_job(*args, **kwargs)
                 elif job_type == "merge_transcript":
+                    # Đảm bảo tất cả các job STT liên quan đã hoàn thành
+                    meeting_id = args[0]
+                    logger.info(f"Waiting for all STT jobs to complete for meeting_id={meeting_id}")
+                    wait_for_stt_jobs(meeting_id)
                     result = enqueue_merge_transcript_job(*args, **kwargs)
                 elif job_type == "merge_audio":
                     result = enqueue_merge_job(*args, **kwargs)
-                
+
                 logger.info(f"✅ Job completed: {result}")
                 job_queue.task_done()
-                
+
             except queue.Empty:
                 continue
             except Exception as e:
                 logger.error(f"❌ Job failed: {str(e)}", exc_info=True)
                 job_queue.task_done()
-    
+
     def stop(self):
         self.running = False
 

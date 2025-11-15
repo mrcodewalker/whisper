@@ -15,8 +15,12 @@ MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 # Global job queue
 job_queue = queue.Queue()
 
+# Initialize Whisper model globally
+import whisper
+WHISPER_MODEL = whisper.load_model("medium")
+
 class JobWorker(threading.Thread):
-    """Background worker thread"""
+    """Background worker thread for sequential job processing"""
     def __init__(self):
         super().__init__(daemon=True)
         self.running = True
@@ -25,13 +29,13 @@ class JobWorker(threading.Thread):
         logger.info("🔄 Job Worker started")
         while self.running:
             try:
-                # Lấy job từ queue
+                # Get job from queue
                 job_type, args, kwargs = job_queue.get(timeout=1)
                 logger.info(f"⚙️ Processing job: {job_type} with args={args}")
 
-                # Xử lý từng loại job theo thứ tự
+                # Process jobs sequentially
                 if job_type == "stt":
-                    result = enqueue_stt_job(*args, **kwargs)
+                    result = self.process_stt_job(*args, **kwargs)
                 elif job_type == "merge_audio":
                     result = enqueue_merge_job(*args, **kwargs)
 
@@ -44,65 +48,45 @@ class JobWorker(threading.Thread):
                 logger.error(f"❌ Job failed: {str(e)}", exc_info=True)
                 job_queue.task_done()
 
+    def process_stt_job(self, meeting_id, user_id, full_name, role, ts_str, filepath):
+        """
+        Process a speech-to-text job using the global Whisper model.
+        """
+        try:
+            logger.info(f"Starting STT job for meeting_id={meeting_id}, user_id={user_id}, file={filepath}")
+
+            # Transcribe audio using the global Whisper model
+            result = WHISPER_MODEL.transcribe(filepath)
+            text = result["text"]
+            logger.info(f"Transcription complete. Text length: {len(text)}")
+
+            # Append transcription to DOCX file
+            from utils import append_to_docx
+            append_to_docx(meeting_id, {
+                "ts": ts_str,
+                "user_id": user_id,
+                "full_name": full_name,
+                "role": role,
+                "text": text
+            })
+
+            return {"meeting_id": meeting_id, "user_id": user_id, "text_len": len(text)}
+
+        except Exception as e:
+            logger.error(f"STT job failed: {str(e)}", exc_info=True)
+            raise RuntimeError(f"STT job failed for meeting_id={meeting_id}, user_id={user_id}: {str(e)}")
+
     def stop(self):
         self.running = False
 
-# Start worker threads
-NUM_WORKERS = 2  # Số lượng worker (tùy chỉnh theo số CPU)
-workers = [JobWorker() for _ in range(NUM_WORKERS)]
-for worker in workers:
-    worker.start()
+# Start a single worker thread for sequential processing
+worker = JobWorker()
+worker.start()
 
 def enqueue_job(job_type, *args, **kwargs):
     """Enqueue job to be processed by worker threads"""
     job_queue.put((job_type, args, kwargs))
     logger.info(f"📥 Job enqueued: {job_type}")
-
-# Correct the import to use the existing function in utils.py
-from utils import get_whisper_model
-
-# Initialize Whisper model globally
-# Load the Whisper model once at the start
-WHISPER_MODEL = get_whisper_model("medium")
-
-# Update STT job to save directly to DOCX
-
-def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
-    """
-    Transcribe audio file using Whisper and append result to a DOCX file.
-    """
-    try:
-        logger.info(f"Starting STT job for meeting_id={meeting_id}, user_id={user_id}, file={filepath}")
-
-        from utils import transcribe_with_whisper, append_to_docx
-
-        # Transcribe audio using the cached Whisper model
-        logger.info(f"Transcribing {filepath}...")
-        text = transcribe_with_whisper(filepath)
-        logger.info(f"Transcription complete. Text length: {len(text)}")
-
-        # Create entry
-        entry = {
-            "ts": ts,
-            "user_id": user_id,
-            "full_name": full_name,
-            "role": role,
-            "text": text,
-            "source_file": filepath
-        }
-
-        # Append to DOCX file
-        logger.info(f"Appending transcription to DOCX for meeting_id={meeting_id}")
-        append_to_docx(meeting_id, entry)
-
-        result = {"meeting_id": meeting_id, "user_id": user_id, "text_len": len(text)}
-        logger.info(f"STT job completed successfully: {result}")
-        return result
-
-    except Exception as e:
-        logger.error(f"STT job failed: {str(e)}", exc_info=True)
-        raise RuntimeError(f"STT job failed for meeting_id={meeting_id}, user_id={user_id}: {str(e)}")
-
 
 def enqueue_merge_transcript_job(meeting_id):
     """

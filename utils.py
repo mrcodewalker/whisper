@@ -272,3 +272,14 @@ def build_transcript_from_cache(meeting_id):
     cache_key = f"meeting:{meeting_id}:transcripts"
     entries = r.lrange(cache_key, 0, -1)
     return [json.loads(e) for e in entries]
+
+def clear_transcript_cache(meeting_id):
+    """
+    Clear transcript cache for a specific meeting ID.
+    """
+    try:
+        cache_key = f"meeting:{meeting_id}:transcripts"
+        r.delete(cache_key)  # Assuming `r` is the Redis connection
+        print(f"✅ Cleared transcript cache for meeting_id={meeting_id}")
+    except Exception as e:
+        print(f"❌ Failed to clear transcript cache for meeting_id={meeting_id}: {str(e)}")

@@ -32,12 +32,6 @@ class JobWorker(threading.Thread):
                 # Xử lý từng loại job theo thứ tự
                 if job_type == "stt":
                     result = enqueue_stt_job(*args, **kwargs)
-                elif job_type == "merge_transcript":
-                    # Đảm bảo tất cả các job STT liên quan đã hoàn thành
-                    meeting_id = args[0]
-                    logger.info(f"Waiting for all STT jobs to complete for meeting_id={meeting_id}")
-                    wait_for_stt_jobs(meeting_id)
-                    result = enqueue_merge_transcript_job(*args, **kwargs)
                 elif job_type == "merge_audio":
                     result = enqueue_merge_job(*args, **kwargs)
 
@@ -69,16 +63,18 @@ from utils import get_whisper_model
 
 # Initialize Whisper model globally
 # Load the Whisper model once at the start
-WHISPER_MODEL = get_whisper_model()
+WHISPER_MODEL = get_whisper_model("medium")
+
+# Update STT job to save directly to DOCX
 
 def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
     """
-    Transcribe audio file using Whisper and store result in Redis cache
+    Transcribe audio file using Whisper and append result to a DOCX file.
     """
     try:
         logger.info(f"Starting STT job for meeting_id={meeting_id}, user_id={user_id}, file={filepath}")
 
-        from utils import transcribe_with_whisper, append_transcript_cache
+        from utils import transcribe_with_whisper, append_to_docx
 
         # Transcribe audio using the cached Whisper model
         logger.info(f"Transcribing {filepath}...")
@@ -95,9 +91,9 @@ def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
             "source_file": filepath
         }
 
-        # Append to cache
-        logger.info(f"Appending to cache for meeting_id={meeting_id}")
-        append_transcript_cache(meeting_id, entry)
+        # Append to DOCX file
+        logger.info(f"Appending transcription to DOCX for meeting_id={meeting_id}")
+        append_to_docx(meeting_id, entry)
 
         result = {"meeting_id": meeting_id, "user_id": user_id, "text_len": len(text)}
         logger.info(f"STT job completed successfully: {result}")
@@ -209,7 +205,7 @@ def enqueue_merge_job(meeting_id):
                     for old_ogg_file in old_ogg_files:
                         old_ogg_path = os.path.join(final_dir, old_ogg_file)
                         try:
-                            os.remove(old_ogg_path)
+                            os.remove(old_ogg_path)  # Corrected variable name
                             deleted_count += 1
                             log.write(f"Deleted old OGG file: {old_ogg_file}\n")
                         except Exception as e:

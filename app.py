@@ -18,6 +18,9 @@ os.makedirs(MEETINGS_DIR, exist_ok=True)
 
 @app.route("/api/stt_input", methods=["POST"])
 def stt_input():
+    """
+    API to handle speech-to-text requests. Ensures jobs are processed in order.
+    """
     f = request.files.get("file")
     meeting_id = request.form.get("meeting_id")
     user_id = request.form.get("user_id")
@@ -48,9 +51,9 @@ def stt_input():
     # Enqueue STT job to transcribe the audio using Thread Pool
     try:
         enqueue_job("stt", meeting_id, user_id, full_name, role, ts_str, path)
-        return jsonify({"status": "saved", "meeting_id": meeting_id, "user_id": user_id}), 202
+        return jsonify({"status": "queued", "meeting_id": meeting_id, "user_id": user_id}), 202
     except Exception as e:
-        return jsonify({"status": "saved", "meeting_id": meeting_id, "user_id": user_id, "error": str(e)}), 202
+        return jsonify({"status": "error", "meeting_id": meeting_id, "user_id": user_id, "error": str(e)}), 500
 
 
 @app.route("/api/meeting_files/<meeting_id>", methods=["GET"])
@@ -132,45 +135,6 @@ def merge_audio():
 @app.route("/api/merge_status/<job_id>", methods=["GET"])
 def check_merge_status(job_id):
     return jsonify({"error": "merge status checking is not available with Thread Pool"}), 501
-
-
-@app.route("/api/merge_transcript", methods=["POST"])
-def merge_transcript():
-    """
-    Merge all transcripts from cache and create a DOCX file.
-    Ensure all STT jobs are completed before merging.
-    """
-    j = request.get_json() or {}
-    meeting_id = j.get("meeting_id")
-
-    if not meeting_id:
-        return jsonify({"error": "missing meeting_id"}), 400
-
-    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
-    final_dir = os.path.join(meeting_dir, "final")
-
-    try:
-        os.makedirs(final_dir, exist_ok=True)
-
-        # Enqueue merge transcript job
-        from jobs import enqueue_merge_transcript_job
-        enqueue_job("merge_transcript", meeting_id)
-
-        return jsonify({
-            "status": "merge_transcript_queued",
-            "meeting_id": meeting_id
-        }), 202
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "meeting_id": meeting_id,
-            "error": str(e)
-        }), 500
-
-
-@app.route("/api/merge_transcript_status/<job_id>", methods=["GET"])
-def check_merge_transcript_status(job_id):
-    return jsonify({"error": "merge transcript status checking is not available with Thread Pool"}), 501
 
 
 @app.route("/api/transcript_file/<meeting_id>/<filename>", methods=["GET"])

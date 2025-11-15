@@ -318,3 +318,38 @@ def delete_old_transcripts(final_dir):
         print(f"Total deleted transcript files: {deleted_count}")
     except Exception as e:
         print(f"Error deleting old transcript files: {str(e)}")
+
+def append_to_docx(meeting_id, entry):
+    """
+    Append a new transcript entry to the corresponding DOCX file.
+    If the file does not exist, create it.
+    """
+    from docx import Document
+    import os
+
+    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
+    final_dir = os.path.join(meeting_dir, "final")
+    os.makedirs(final_dir, exist_ok=True)
+
+    docx_path = os.path.join(final_dir, f"transcript_{meeting_id}.docx")
+
+    # Load existing DOCX or create a new one
+    if os.path.exists(docx_path):
+        doc = Document(docx_path)
+    else:
+        doc = Document()
+        doc.add_heading(f"Bien ban cuoc hop: {meeting_id}", level=1)
+        doc.add_paragraph(f"Created: {datetime.utcnow().strftime('%d/%m/%Y %H:%M:%S UTC')}")
+        doc.add_paragraph("")
+
+    # Append the new entry
+    ts_str = entry.get("ts", "")
+    full_name = entry.get("full_name", "Unknown")
+    role = entry.get("role", "")
+    text = entry.get("text", "")
+    line = f"({ts_str}) {full_name} - {role}: {text}"
+    doc.add_paragraph(line)
+
+    # Save the updated DOCX
+    doc.save(docx_path)
+    print(f"Updated DOCX file: {docx_path}")

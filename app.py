@@ -257,5 +257,32 @@ def download_transcript_file(meeting_id, filename):
     return send_from_directory(meeting_dir, filename, as_attachment=True)
 
 
+@app.route("/api/queue_status", methods=["GET"])
+def queue_status():
+    """API to get the status of all jobs in the queue."""
+    try:
+        from jobs import job_queue
+
+        # Get all jobs in the queue
+        jobs = list(job_queue.queue)
+        job_list = []
+        for job in jobs:
+            job_type, args, kwargs = job
+            job_list.append({
+                "job_type": job_type,
+                "args": args,
+                "kwargs": kwargs
+            })
+
+        return jsonify({
+            "status": "success",
+            "queue_size": job_queue.qsize(),
+            "jobs": job_list
+        }), 200
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

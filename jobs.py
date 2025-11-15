@@ -5,7 +5,7 @@ from utils import merge_audio_chunks_direct, build_docx_and_pdf, build_transcrip
 from datetime import datetime
 import threading
 import queue
-import atexit
+import time
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -61,21 +61,12 @@ def enqueue_job(job_type, *args, **kwargs):
     job_queue.put((job_type, args, kwargs))
     logger.info(f"📥 Job enqueued: {job_type}")
 
-def clear_queue_on_exit():
-    """Clear the job queue when the application exits."""
-    while not job_queue.empty():
-        job_queue.get()
-        job_queue.task_done()
-    logger.info("Job queue cleared on exit.")
-
-# Register the clear_queue_on_exit function to run on application exit
-atexit.register(clear_queue_on_exit)
-
-# Initialize Whisper model globally at the start of the application
+# Correct the import to use the existing function in utils.py
 from utils import get_whisper_model
-logger.info("Initializing Whisper model at application startup...")
+
+# Initialize Whisper model globally
+# Load the Whisper model once at the start
 WHISPER_MODEL = get_whisper_model()
-logger.info("Whisper model initialized and ready.")
 
 def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
     """
@@ -114,60 +105,38 @@ def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
         raise RuntimeError(f"STT job failed for meeting_id={meeting_id}, user_id={user_id}: {str(e)}")
 
 
+# Modify the enqueue_merge_transcript_job to ensure STT jobs are completed before merging
+from utils import build_transcript_from_cache, clear_transcript_cache, build_docx_and_pdf
+
 def enqueue_merge_transcript_job(meeting_id):
     """
-    Merge all transcripts from Redis cache and create DOCX file
+    Merge all transcripts from cache and create a DOCX file.
+    Ensure all STT jobs are completed before proceeding.
     """
     try:
-        logger.info(f"Starting merge transcript job for meeting_id={meeting_id}")
-        
-        meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
-        final_dir = os.path.join(meeting_dir, "final")
-        timestamp = datetime.utcnow().strftime("%d-%m-%Y_%H-%M-%S")
-        
-        os.makedirs(final_dir, exist_ok=True)
-        
-        # Get transcripts from cache
-        logger.info(f"Fetching transcripts from cache for meeting_id={meeting_id}")
+        # Wait for all STT jobs to complete
+        while not job_queue.empty():
+            logger.info("Waiting for STT jobs to complete...")
+            time.sleep(1)  # Poll every second
+
+        # Build transcript from cache
+        logger.info(f"Building transcript for meeting_id={meeting_id}")
         entries = build_transcript_from_cache(meeting_id)
-        logger.info(f"Found {len(entries)} transcripts in cache")
-        
-        if not entries:
-            raise RuntimeError("No transcripts found in cache")
-        
-        # Create DOCX file
-        docx_path = os.path.join(final_dir, f"transcript_{meeting_id}_{timestamp}.docx")
-        logger.info(f"Creating DOCX file: {docx_path}")
-        
-        from docx import Document
-        doc = Document()
-        doc.add_heading(f"Bien ban cuoc hop: {meeting_id}", level=1)
-        doc.add_paragraph(f"Created: {datetime.utcnow().strftime('%d/%m/%Y %H:%M:%S UTC')}")
-        doc.add_paragraph("")
-        
-        for e in entries:
-            ts_str = e.get("ts", "")
-            full_name = e.get("full_name", "Unknown")
-            role = e.get("role", "")
-            text = e.get("text", "")
-            line = f"({ts_str}) {full_name} - {role}: {text}"
-            doc.add_paragraph(line)
-        
-        doc.save(docx_path)
-        logger.info(f"DOCX file saved successfully: {docx_path}")
-        
-        result = {
-            "status": "transcript_created",
-            "meeting_id": meeting_id,
-            "output": docx_path,
-            "total_transcripts": len(entries)
-        }
-        logger.info(f"Merge transcript job completed: {result}")
-        return result
-        
+
+        # Create DOCX and PDF files
+        output_dir = os.path.join(MEETINGS_DIR, meeting_id, "final")
+        os.makedirs(output_dir, exist_ok=True)
+        docx_path, pdf_path = build_docx_and_pdf(meeting_id, entries, output_dir)
+
+        # Clear transcript cache after files are created
+        logger.info(f"Clearing transcript cache for meeting_id={meeting_id}")
+        clear_transcript_cache(meeting_id)
+
+        return {"docx_path": docx_path, "pdf_path": pdf_path}
+
     except Exception as e:
-        logger.error(f"Merge transcript job failed: {str(e)}", exc_info=True)
-        raise RuntimeError(f"Merge transcript failed for meeting_id={meeting_id}: {str(e)}")
+        logger.error(f"Failed to merge transcript for meeting_id={meeting_id}: {str(e)}", exc_info=True)
+        raise RuntimeError(f"Failed to merge transcript for meeting_id={meeting_id}: {str(e)}")
 
 
 def enqueue_merge_job(meeting_id):

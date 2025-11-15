@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os, json, hashlib, shutil, wave
+import os, json, hashlib, shutil, wave, time
 from redis import Redis
 from datetime import datetime
 from docx import Document
@@ -283,3 +283,38 @@ def clear_transcript_cache(meeting_id):
         print(f"✅ Cleared transcript cache for meeting_id={meeting_id}")
     except Exception as e:
         print(f"❌ Failed to clear transcript cache for meeting_id={meeting_id}: {str(e)}")
+
+def wait_for_stt_jobs(meeting_id):
+    """
+    Wait for all STT jobs related to a specific meeting_id to complete.
+    """
+    cache_key = f"meeting:{meeting_id}:transcripts"
+    while True:
+        try:
+            # Check if there are any pending STT jobs for the meeting_id
+            pending_jobs = r.lrange(cache_key, 0, -1)
+            if pending_jobs:
+                print(f"Waiting for {len(pending_jobs)} STT jobs to complete for meeting_id={meeting_id}...")
+                time.sleep(2)  # Wait before checking again
+            else:
+                print(f"All STT jobs completed for meeting_id={meeting_id}.")
+                break
+        except Exception as e:
+            print(f"Error while waiting for STT jobs: {str(e)}")
+            break
+
+def delete_old_transcripts(final_dir):
+    """
+    Delete old transcript files (DOCX and PDF) in the final directory.
+    """
+    try:
+        deleted_count = 0
+        for fname in os.listdir(final_dir):
+            if fname.endswith(".docx") or fname.endswith(".pdf"):
+                fpath = os.path.join(final_dir, fname)
+                os.remove(fpath)
+                deleted_count += 1
+                print(f"Deleted old transcript file: {fname}")
+        print(f"Total deleted transcript files: {deleted_count}")
+    except Exception as e:
+        print(f"Error deleting old transcript files: {str(e)}")

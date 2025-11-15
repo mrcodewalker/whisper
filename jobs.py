@@ -5,7 +5,6 @@ from utils import merge_audio_chunks_direct, build_docx_and_pdf, build_transcrip
 from datetime import datetime
 import threading
 import queue
-import time
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -105,38 +104,70 @@ def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
         raise RuntimeError(f"STT job failed for meeting_id={meeting_id}, user_id={user_id}: {str(e)}")
 
 
-# Modify the enqueue_merge_transcript_job to ensure STT jobs are completed before merging
-from utils import build_transcript_from_cache, clear_transcript_cache, build_docx_and_pdf
-
 def enqueue_merge_transcript_job(meeting_id):
     """
-    Merge all transcripts from cache and create a DOCX file.
-    Ensure all STT jobs are completed before proceeding.
+    Merge all transcripts from Redis cache and create DOCX file.
+    Wait for all STT jobs to complete before proceeding.
+    Delete old transcript files before creating new ones.
     """
     try:
+        logger.info(f"Starting merge transcript job for meeting_id={meeting_id}")
+
         # Wait for all STT jobs to complete
-        while not job_queue.empty():
-            logger.info("Waiting for STT jobs to complete...")
-            time.sleep(1)  # Poll every second
+        from utils import wait_for_stt_jobs, delete_old_transcripts
+        wait_for_stt_jobs(meeting_id)
 
-        # Build transcript from cache
-        logger.info(f"Building transcript for meeting_id={meeting_id}")
+        meeting_dir = os.path.join(MEETINGS_DIR, meeting_id)
+        final_dir = os.path.join(meeting_dir, "final")
+        timestamp = datetime.utcnow().strftime("%d-%m-%Y_%H-%M-%S")
+
+        os.makedirs(final_dir, exist_ok=True)
+
+        # Delete old transcript files
+        logger.info(f"Deleting old transcript files in {final_dir}")
+        delete_old_transcripts(final_dir)
+
+        # Get transcripts from cache
+        logger.info(f"Fetching transcripts from cache for meeting_id={meeting_id}")
         entries = build_transcript_from_cache(meeting_id)
+        logger.info(f"Found {len(entries)} transcripts in cache")
 
-        # Create DOCX and PDF files
-        output_dir = os.path.join(MEETINGS_DIR, meeting_id, "final")
-        os.makedirs(output_dir, exist_ok=True)
-        docx_path, pdf_path = build_docx_and_pdf(meeting_id, entries, output_dir)
+        if not entries:
+            raise RuntimeError("No transcripts found in cache")
 
-        # Clear transcript cache after files are created
-        logger.info(f"Clearing transcript cache for meeting_id={meeting_id}")
-        clear_transcript_cache(meeting_id)
+        # Create DOCX file
+        docx_path = os.path.join(final_dir, f"transcript_{meeting_id}_{timestamp}.docx")
+        logger.info(f"Creating DOCX file: {docx_path}")
 
-        return {"docx_path": docx_path, "pdf_path": pdf_path}
+        from docx import Document
+        doc = Document()
+        doc.add_heading(f"Bien ban cuoc hop: {meeting_id}", level=1)
+        doc.add_paragraph(f"Created: {datetime.utcnow().strftime('%d/%m/%Y %H:%M:%S UTC')}")
+        doc.add_paragraph("")
+
+        for e in entries:
+            ts_str = e.get("ts", "")
+            full_name = e.get("full_name", "Unknown")
+            role = e.get("role", "")
+            text = e.get("text", "")
+            line = f"({ts_str}) {full_name} - {role}: {text}"
+            doc.add_paragraph(line)
+
+        doc.save(docx_path)
+        logger.info(f"DOCX file saved successfully: {docx_path}")
+
+        result = {
+            "status": "transcript_created",
+            "meeting_id": meeting_id,
+            "output": docx_path,
+            "total_transcripts": len(entries)
+        }
+        logger.info(f"Merge transcript job completed: {result}")
+        return result
 
     except Exception as e:
-        logger.error(f"Failed to merge transcript for meeting_id={meeting_id}: {str(e)}", exc_info=True)
-        raise RuntimeError(f"Failed to merge transcript for meeting_id={meeting_id}: {str(e)}")
+        logger.error(f"Merge transcript job failed: {str(e)}", exc_info=True)
+        raise RuntimeError(f"Merge transcript failed for meeting_id={meeting_id}: {str(e)}")
 
 
 def enqueue_merge_job(meeting_id):

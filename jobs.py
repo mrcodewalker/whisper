@@ -3,6 +3,8 @@ import os
 import logging
 from utils import merge_audio_chunks_direct, build_docx_and_pdf, build_transcript_from_cache
 from datetime import datetime
+import threading
+import queue
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -10,6 +12,59 @@ logger = logging.getLogger(__name__)
 
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 
+# Global job queue
+job_queue = queue.Queue()
+
+class JobWorker(threading.Thread):
+    """Background worker thread"""
+    def __init__(self):
+        super().__init__(daemon=True)
+        self.running = True
+    
+    def run(self):
+        logger.info("🔄 Job Worker started")
+        while self.running:
+            try:
+                # Lấy job từ queue
+                job_type, args, kwargs = job_queue.get(timeout=1)
+                logger.info(f"⚙️ Processing job: {job_type} with args={args}")
+                
+                # Xử lý từng loại job
+                if job_type == "stt":
+                    result = enqueue_stt_job(*args, **kwargs)
+                elif job_type == "merge_transcript":
+                    result = enqueue_merge_transcript_job(*args, **kwargs)
+                elif job_type == "merge_audio":
+                    result = enqueue_merge_job(*args, **kwargs)
+                
+                logger.info(f"✅ Job completed: {result}")
+                job_queue.task_done()
+                
+            except queue.Empty:
+                continue
+            except Exception as e:
+                logger.error(f"❌ Job failed: {str(e)}", exc_info=True)
+                job_queue.task_done()
+    
+    def stop(self):
+        self.running = False
+
+# Start worker threads
+NUM_WORKERS = 2  # Số lượng worker (tùy chỉnh theo số CPU)
+workers = [JobWorker() for _ in range(NUM_WORKERS)]
+for worker in workers:
+    worker.start()
+
+def enqueue_job(job_type, *args, **kwargs):
+    """Enqueue job to be processed by worker threads"""
+    job_queue.put((job_type, args, kwargs))
+    logger.info(f"📥 Job enqueued: {job_type}")
+
+# Initialize Whisper model globally
+from utils import load_whisper_model
+
+# Load the Whisper model once at the start
+WHISPER_MODEL = load_whisper_model()
 
 def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
     """
@@ -17,14 +72,14 @@ def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
     """
     try:
         logger.info(f"Starting STT job for meeting_id={meeting_id}, user_id={user_id}, file={filepath}")
-        
+
         from utils import transcribe_with_whisper, append_transcript_cache
-        
-        # Transcribe audio
+
+        # Transcribe audio using the global model
         logger.info(f"Transcribing {filepath}...")
-        text = transcribe_with_whisper(filepath)
+        text = transcribe_with_whisper(filepath, model=WHISPER_MODEL)
         logger.info(f"Transcription complete. Text length: {len(text)}")
-        
+
         # Create entry
         entry = {
             "ts": ts,
@@ -34,15 +89,15 @@ def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
             "text": text,
             "source_file": filepath
         }
-        
+
         # Append to cache
         logger.info(f"Appending to cache for meeting_id={meeting_id}")
         append_transcript_cache(meeting_id, entry)
-        
+
         result = {"meeting_id": meeting_id, "user_id": user_id, "text_len": len(text)}
         logger.info(f"STT job completed successfully: {result}")
         return result
-        
+
     except Exception as e:
         logger.error(f"STT job failed: {str(e)}", exc_info=True)
         raise RuntimeError(f"STT job failed for meeting_id={meeting_id}, user_id={user_id}: {str(e)}")

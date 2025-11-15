@@ -92,8 +92,8 @@ def download_meeting_file(meeting_id, filename):
     return send_from_directory(meeting_dir, filename, as_attachment=True)
 
 
-@app.route("/api/merge_meeting", methods=["POST"])
-def merge_meeting():
+@app.route("/api/merge_audio", methods=["POST"])
+def merge_audio():
     j = request.get_json() or {}
     meeting_id = j.get("meeting_id")
     if not meeting_id:

@@ -36,6 +36,22 @@ def enqueue_merge_job(meeting_id):
         log.write(f"Output WAV file: {merged_wav_path}\n")
         log.write(f"Output OGG file: {merged_ogg_path}\n")
         try:
+            # Xóa tất cả file OGG cũ trong folder final trước khi merge
+            try:
+                old_ogg_files = [f for f in os.listdir(final_dir) if f.endswith(".ogg")]
+                deleted_count = 0
+                for old_ogg_file in old_ogg_files:
+                    old_ogg_path = os.path.join(final_dir, old_ogg_file)
+                    try:
+                        os.remove(old_ogg_path)
+                        deleted_count += 1
+                        log.write(f"Deleted old OGG file: {old_ogg_file}\n")
+                    except Exception as e:
+                        log.write(f"Failed to delete {old_ogg_file}: {e}\n")
+                log.write(f"Total deleted old OGG files: {deleted_count}/{len(old_ogg_files)}\n")
+            except Exception as e:
+                log.write(f"Error deleting old OGG files: {e}\n")
+            
             if not os.path.exists(chunks_dir) or not os.listdir(chunks_dir):
                 raise RuntimeError("No audio chunks to merge")
             

@@ -5,6 +5,7 @@ from utils import merge_audio_chunks_direct, build_docx_and_pdf, build_transcrip
 from datetime import datetime
 import threading
 import queue
+import atexit
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -60,12 +61,21 @@ def enqueue_job(job_type, *args, **kwargs):
     job_queue.put((job_type, args, kwargs))
     logger.info(f"📥 Job enqueued: {job_type}")
 
-# Correct the import to use the existing function in utils.py
-from utils import get_whisper_model
+def clear_queue_on_exit():
+    """Clear the job queue when the application exits."""
+    while not job_queue.empty():
+        job_queue.get()
+        job_queue.task_done()
+    logger.info("Job queue cleared on exit.")
 
-# Initialize Whisper model globally
-# Load the Whisper model once at the start
+# Register the clear_queue_on_exit function to run on application exit
+atexit.register(clear_queue_on_exit)
+
+# Initialize Whisper model globally at the start of the application
+from utils import get_whisper_model
+logger.info("Initializing Whisper model at application startup...")
 WHISPER_MODEL = get_whisper_model()
+logger.info("Whisper model initialized and ready.")
 
 def enqueue_stt_job(meeting_id, user_id, full_name, role, ts, filepath):
     """

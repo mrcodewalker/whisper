@@ -10,6 +10,9 @@ allowed_origins = [
     "https://localhost:8080",
     "https://36.50.54.109:8081",
     "https://36.50.54.109:8082",
+    "http://localhost:4200",
+    "https://localhost:4200",
+    "https://meeting.kolla.click/"
 ]
 CORS(app, origins=allowed_origins, supports_credentials=True)
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")

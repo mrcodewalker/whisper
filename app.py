@@ -7,6 +7,7 @@ import os, uuid
 from utils import try_convert_docx_to_pdf_libreoffice
 from PyPDF2 import PdfReader, PdfWriter
 from OpenSSL import crypto
+import subprocess
 
 app = Flask(__name__)
 allowed_origins = [
@@ -231,6 +232,42 @@ def sign_pdf(input_pdf_path, output_pdf_path, pfx_path, password):
 def queue_status():
     """API to get the status of all jobs in the queue."""
     return jsonify({"error": "queue status checking is not available with Thread Pool"}), 501
+
+
+@app.route('/api/create_signkey', methods=['POST'])
+def create_signkey():
+    try:
+        # Default key name
+        key_name = 'server'
+        key_dir = os.path.join(os.getcwd(), 'meetings', 'global_sign')
+
+        # Ensure the directory exists
+        if not os.path.exists(key_dir):
+            os.makedirs(key_dir)
+
+        # Define file paths
+        key_path = os.path.join(key_dir, f"{key_name}.key")
+        csr_path = os.path.join(key_dir, f"{key_name}.csr")
+        pem_path = os.path.join(key_dir, f"{key_name}.pem")
+
+        # Generate private key
+        subprocess.run(["openssl", "genrsa", "-out", key_path, "2048"], check=True)
+
+        # Generate CSR
+        subprocess.run([
+            "openssl", "req", "-new", "-key", key_path, "-out", csr_path,
+            "-subj", "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=example.com"
+        ], check=True)
+
+        # Generate self-signed certificate
+        subprocess.run([
+            "openssl", "x509", "-req", "-days", "365", "-in", csr_path, "-signkey", key_path, "-out", pem_path
+        ], check=True)
+
+        return jsonify({"message": "Keys and certificate created successfully.", "key_path": key_path, "csr_path": csr_path, "pem_path": pem_path}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":

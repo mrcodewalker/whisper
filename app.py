@@ -6,8 +6,10 @@ from datetime import datetime
 import os, uuid
 from utils import try_convert_docx_to_pdf_libreoffice
 from PyPDF2 import PdfReader, PdfWriter
-from OpenSSL import crypto
-import subprocess
+from pyhanko.sign import signers
+from pyhanko.pdf_utils.incremental_update import IncrementalPdfFileWriter
+from pyhanko.sign.fields import SigFieldSpec
+from pyhanko.pdf_utils.reader import PdfFileReader
 
 app = Flask(__name__)
 allowed_origins = [
@@ -182,12 +184,39 @@ def convert_pdf():
         if not success:
             return jsonify({"error": "Failed to convert DOCX to PDF"}), 500
 
-        # Sign the PDF
+        # Sign the PDF using pyhanko
         signed_pdf_path = pdf_path.replace(".pdf", "_signed.pdf")
-        pfx_path = os.path.join("meetings", "global_sign", "meeting_sign.pfx")
-        password = b"your_password_here"  # Replace with the actual password for the PFX file
+        key_file = os.path.join("meetings", "global_sign", "private.key")
+        cert_file = os.path.join("meetings", "global_sign", "public.pem")
 
-        sign_pdf(pdf_path, signed_pdf_path, pfx_path, password)
+        # Load signer
+        signer = signers.SimpleSigner.load_from_files(
+            key_file=key_file,
+            cert_file=cert_file
+        )
+
+        # Open the original PDF
+        w = IncrementalPdfFileWriter(PdfFileReader(open(pdf_path, 'rb')))
+
+        # Define signature field
+        signature_field = SigFieldSpec(
+            'Signature1',
+            box=(50, 700, 250, 750),  # Coordinates for the signature
+            page=0
+        )
+
+        # Prepare the PDF signer
+        pdf_signer = signers.PdfSigner(
+            signers.PdfSignatureMetadata(
+                field_spec=signature_field,
+                md_algorithm='sha256'
+            ),
+            signer=signer
+        )
+
+        # Sign the PDF
+        with open(signed_pdf_path, 'wb') as f:
+            pdf_signer.sign_pdf(w, output_file=f)
 
         return jsonify({
             "status": "success",
@@ -198,76 +227,11 @@ def convert_pdf():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-def sign_pdf(input_pdf_path, output_pdf_path, pfx_path, password):
-    """
-    Sign a PDF file using a PFX certificate.
-    """
-    with open(pfx_path, "rb") as pfx_file:
-        pfx = crypto.load_pkcs12(pfx_file.read(), password)
-
-    private_key = crypto.dump_privatekey(crypto.FILETYPE_PEM, pfx.get_privatekey())
-    certificate = crypto.dump_certificate(crypto.FILETYPE_PEM, pfx.get_certificate())
-
-    reader = PdfReader(input_pdf_path)
-    writer = PdfWriter()
-
-    for page in reader.pages:
-        writer.add_page(page)
-
-    # Add signature metadata
-    writer.add_metadata({
-        "/Author": "Meeting System",
-        "/Title": "Signed Transcript",
-        "/Subject": "Digitally Signed PDF",
-    })
-
-    # Write the signed PDF
-    with open(output_pdf_path, "wb") as output_file:
-        writer.write(output_file)
-
-    print(f"PDF signed successfully: {output_pdf_path}")
-
 
 @app.route("/api/queue_status", methods=["GET"])
 def queue_status():
     """API to get the status of all jobs in the queue."""
     return jsonify({"error": "queue status checking is not available with Thread Pool"}), 501
-
-
-@app.route('/api/create_signkey', methods=['POST'])
-def create_signkey():
-    try:
-        # Default key name
-        key_name = 'server'
-        key_dir = os.path.join(os.getcwd(), 'meetings', 'global_sign')
-
-        # Ensure the directory exists
-        if not os.path.exists(key_dir):
-            os.makedirs(key_dir)
-
-        # Define file paths
-        key_path = os.path.join(key_dir, f"{key_name}.key")
-        csr_path = os.path.join(key_dir, f"{key_name}.csr")
-        pem_path = os.path.join(key_dir, f"{key_name}.pem")
-
-        # Generate private key
-        subprocess.run(["openssl", "genrsa", "-out", key_path, "2048"], check=True)
-
-        # Generate CSR
-        subprocess.run([
-            "openssl", "req", "-new", "-key", key_path, "-out", csr_path,
-            "-subj", "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=example.com"
-        ], check=True)
-
-        # Generate self-signed certificate
-        subprocess.run([
-            "openssl", "x509", "-req", "-days", "365", "-in", csr_path, "-signkey", key_path, "-out", pem_path
-        ], check=True)
-
-        return jsonify({"message": "Keys and certificate created successfully.", "key_path": key_path, "csr_path": csr_path, "pem_path": pem_path}), 201
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":

@@ -4,6 +4,9 @@ from flask_cors import CORS
 from jobs import enqueue_job
 from datetime import datetime
 import os, uuid
+from utils import try_convert_docx_to_pdf_libreoffice
+from PyPDF2 import PdfReader, PdfWriter
+from OpenSSL import crypto
 
 app = Flask(__name__)
 allowed_origins = [
@@ -147,6 +150,81 @@ def download_transcript_file(meeting_id, filename):
     if not os.path.exists(os.path.join(meeting_dir, filename)):
         return jsonify({"error": "file not found"}), 404
     return send_from_directory(meeting_dir, filename, as_attachment=True)
+
+
+@app.route("/api/convert_pdf", methods=["POST"])
+def convert_pdf():
+    """
+    API to convert a DOCX file of a meeting to a signed PDF file.
+    """
+    j = request.get_json() or {}
+    meeting_id = j.get("meeting_id")
+
+    if not meeting_id:
+        return jsonify({"error": "missing meeting_id"}), 400
+
+    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id, "final")
+    if not os.path.exists(meeting_dir):
+        return jsonify({"error": f"Meeting ID {meeting_id} not found or no final directory exists"}), 404
+
+    # Find the DOCX file
+    docx_files = [f for f in os.listdir(meeting_dir) if f.endswith(".docx")]
+    if not docx_files:
+        return jsonify({"error": "No DOCX file found for the meeting"}), 404
+
+    docx_path = os.path.join(meeting_dir, docx_files[0])
+    pdf_path = os.path.join(meeting_dir, os.path.splitext(docx_files[0])[0] + ".pdf")
+
+    try:
+        # Convert DOCX to PDF
+        success = try_convert_docx_to_pdf_libreoffice(docx_path, pdf_path)
+        if not success:
+            return jsonify({"error": "Failed to convert DOCX to PDF"}), 500
+
+        # Sign the PDF
+        signed_pdf_path = pdf_path.replace(".pdf", "_signed.pdf")
+        pfx_path = os.path.join("meetings", "global_sign", "meeting_sign.pfx")
+        password = b"your_password_here"  # Replace with the actual password for the PFX file
+
+        sign_pdf(pdf_path, signed_pdf_path, pfx_path, password)
+
+        return jsonify({
+            "status": "success",
+            "meeting_id": meeting_id,
+            "pdf_file": signed_pdf_path
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def sign_pdf(input_pdf_path, output_pdf_path, pfx_path, password):
+    """
+    Sign a PDF file using a PFX certificate.
+    """
+    with open(pfx_path, "rb") as pfx_file:
+        pfx = crypto.load_pkcs12(pfx_file.read(), password)
+
+    private_key = crypto.dump_privatekey(crypto.FILETYPE_PEM, pfx.get_privatekey())
+    certificate = crypto.dump_certificate(crypto.FILETYPE_PEM, pfx.get_certificate())
+
+    reader = PdfReader(input_pdf_path)
+    writer = PdfWriter()
+
+    for page in reader.pages:
+        writer.add_page(page)
+
+    # Add signature metadata
+    writer.add_metadata({
+        "/Author": "Meeting System",
+        "/Title": "Signed Transcript",
+        "/Subject": "Digitally Signed PDF",
+    })
+
+    # Write the signed PDF
+    with open(output_pdf_path, "wb") as output_file:
+        writer.write(output_file)
+
+    print(f"PDF signed successfully: {output_pdf_path}")
 
 
 @app.route("/api/queue_status", methods=["GET"])

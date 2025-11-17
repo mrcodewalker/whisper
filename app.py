@@ -179,12 +179,12 @@ def convert_pdf():
 
     meeting_dir = os.path.join(MEETINGS_DIR, meeting_id, "final")
     if not os.path.exists(meeting_dir):
-        return jsonify({"error": f"Meeting ID {meeting_id} not found or no final directory exists"}), 404
+        return jsonify({"error": "meeting directory not found"}), 404
 
     # Find the DOCX file
     docx_files = [f for f in os.listdir(meeting_dir) if f.endswith(".docx")]
     if not docx_files:
-        return jsonify({"error": "No DOCX file found for the meeting"}), 404
+        return jsonify({"error": "no DOCX file found in meeting directory"}), 404
 
     docx_path = os.path.join(meeting_dir, docx_files[0])
     pdf_path = os.path.join(meeting_dir, os.path.splitext(docx_files[0])[0] + ".pdf")
@@ -193,26 +193,24 @@ def convert_pdf():
         # Convert DOCX to PDF
         success = try_convert_docx_to_pdf_libreoffice(docx_path, pdf_path)
         if not success:
-            return jsonify({"error": "Failed to convert DOCX to PDF"}), 500
+            return jsonify({"error": "failed to convert DOCX to PDF"}), 500
 
         # Sign the PDF using pyHanko
         signed_pdf_path = pdf_path.replace(".pdf", "_signed.pdf")
         key_file = os.path.join("meetings", "global_sign", "private.key")
         cert_file = os.path.join("meetings", "global_sign", "public.pem")
 
-        print("Key file path:", key_file)
-        print("Cert file path:", cert_file)
+        if not os.path.exists(key_file) or not os.path.exists(cert_file):
+            return jsonify({"error": "key or certificate file not found"}), 500
 
         # Load signer
         signer = SimpleSigner.load(key_file, cert_file)
 
-
         with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:
-
             writer = IncrementalPdfFileWriter(pdf_in)
-
             reader = writer.reader
 
+            # Add a new page and signature field
             page_count = len(reader.pages)
             last_page = reader.pages[-1]
             media_box = last_page.media_box
@@ -226,26 +224,22 @@ def convert_pdf():
                 writer,
                 fields.SigFieldSpec(
                     'Signature1',
-                    on_page=new_page_index,       # <-- Đặt ở trang mới
-                    box=(400, 50, 550, 150)       # <-- Tọa độ góc dưới-phải
+                    on_page=new_page_index,
+                    box=(400, 50, 550, 150)
                 )
             )
 
+            # Sign the PDF
             pdf_signer = PdfSigner(
                 signature_meta=signature_meta,
                 signer=signer
             )
-
             pdf_signer.sign_pdf(writer, pdf_out)
 
-        return jsonify({
-            "status": "success",
-            "meeting_id": meeting_id,
-            "pdf_file": signed_pdf_path
-        }), 200
+        return jsonify({"status": "success", "signed_pdf": signed_pdf_path}), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "failed to sign PDF", "details": str(e)}), 500
 
 
 @app.route("/api/queue_status", methods=["GET"])

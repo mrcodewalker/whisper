@@ -202,10 +202,13 @@ def convert_pdf():
 
         with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:
             writer = IncrementalPdfFileWriter(pdf_in)
-            media_box = writer.pdf_reader.pages[-1].media_box
+
+            media_box = writer.reader.pages[-1].media_box
+
             new_page = PageObject(writer, media_box=media_box)
             writer.add_page(new_page)
-            new_page_index = len(writer.pdf_reader.pages) - 1
+
+            new_page_index = len(writer.reader.pages) - 1
 
             signature_meta = fields.append_signature_field(
                 writer,

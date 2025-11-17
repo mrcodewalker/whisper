@@ -28,7 +28,7 @@ CORS(app, origins=allowed_origins, supports_credentials=True)
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 os.makedirs(MEETINGS_DIR, exist_ok=True)
 
-
+# new version 
 @app.route("/api/stt_input", methods=["POST"])
 def stt_input():
     """

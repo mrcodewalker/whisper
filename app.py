@@ -207,7 +207,7 @@ def convert_pdf():
         signer = SimpleSigner.load(key_file, cert_file)
 
         with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:
-            pdf_in.seek(0)  # Ensure the file pointer is at the start
+
             reader = PdfFileReader(pdf_in)
             writer = IncrementalPdfFileWriter(reader)
 

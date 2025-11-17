@@ -212,12 +212,14 @@ def convert_pdf():
             reader = PdfFileReader(pdf_in)
             writer = IncrementalPdfFileWriter(pdf_in)
 
-            media_box = reader[-1].media_box
+            page_count = reader.page_count
+            last_page = reader.get_page(page_count - 1)
+            media_box = last_page.media_box
 
             new_page = PageObject(writer, media_box=media_box)
             writer.add_page(new_page)
 
-            new_page_index = len(reader)
+            new_page_index = page_count
 
             signature_meta = fields.append_signature_field(
                 writer,

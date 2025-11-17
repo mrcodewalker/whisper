@@ -211,22 +211,17 @@ def convert_pdf():
             reader = PdfFileReader(pdf_in)
             writer = IncrementalPdfFileWriter(reader)
 
-            # Add a new page and signature field
+            # Add a signature field to the last page
             page_count = len(reader.pages)
             last_page = reader.pages[-1]
             media_box = last_page.media_box
-
-            new_page = PageObject(writer, media_box=media_box)
-            writer.add_page(new_page)
-
-            new_page_index = page_count
 
             signature_meta = fields.append_signature_field(
                 writer,
                 fields.SigFieldSpec(
                     'Signature1',
-                    on_page=new_page_index,
-                    box=(400, 50, 550, 150)
+                    on_page=page_count - 1,  # Last page
+                    box=(400, 50, 550, 150)  # Coordinates for the signature field
                 )
             )
 

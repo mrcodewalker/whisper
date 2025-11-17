@@ -5,14 +5,11 @@ from jobs import enqueue_job
 from datetime import datetime
 import os, uuid
 from utils import try_convert_docx_to_pdf_libreoffice
-from PyPDF2 import PdfReader, PdfWriter
-from pyhanko.sign import signers
-from pyhanko.pdf_utils.incremental_update import IncrementalPdfFileWriter
-from pyhanko.sign.fields import SigFieldSpec
-from pyhanko.pdf_utils.reader import PdfFileReader
+
 from pyhanko.sign.general import load_cert_from_pemder
 from pyhanko.sign.signers import SimpleSigner, PdfSigner, PdfSignatureMetadata
 from pyhanko.sign.fields import append_signature_field
+
 
 app = Flask(__name__)
 allowed_origins = [
@@ -28,7 +25,6 @@ CORS(app, origins=allowed_origins, supports_credentials=True)
 MEETINGS_DIR = os.getenv("MEETINGS_DIR", "meetings")
 os.makedirs(MEETINGS_DIR, exist_ok=True)
 
-# new version 
 @app.route("/api/stt_input", methods=["POST"])
 def stt_input():
     """

@@ -10,6 +10,10 @@ from pyhanko.sign.general import load_cert_from_pemder
 from pyhanko.sign.signers import SimpleSigner, PdfSigner, PdfSignatureMetadata
 from pyhanko.sign.fields import append_signature_field
 
+from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
+from pyhanko.sign import fields
+from pyhanko.pdf_utils.writer import PageObject
+
 
 app = Flask(__name__)
 allowed_origins = [
@@ -193,8 +197,7 @@ def convert_pdf():
         print("Cert file path:", cert_file)
 
         # Load signer
-        with open(key_file, "rb") as key, open(cert_file, "rb") as cert:
-            signer = SimpleSigner.load(key_file, cert_file)
+        signer = SimpleSigner.load(key_file, cert_file)
 
 
         with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:

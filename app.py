@@ -196,13 +196,29 @@ def convert_pdf():
         with open(key_file, "rb") as key, open(cert_file, "rb") as cert:
             signer = SimpleSigner.load(key_file, cert_file)
 
-        # Sign the PDF
+
         with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:
+            writer = IncrementalPdfFileWriter(pdf_in)
+            media_box = writer.pdf_reader.pages[-1].media_box
+            new_page = PageObject(writer, media_box=media_box)
+            writer.add_page(new_page)
+            new_page_index = len(writer.pdf_reader.pages) - 1
+
+            signature_meta = fields.append_signature_field(
+                writer,
+                fields.SigFieldSpec(
+                    'Signature1',
+                    on_page=new_page_index,       # <-- Đặt ở trang mới
+                    box=(400, 50, 550, 150)       # <-- Tọa độ góc dưới-phải
+                )
+            )
+
             pdf_signer = PdfSigner(
-                signature_meta=PdfSignatureMetadata(field_name="Signature1"),
+                signature_meta=signature_meta,
                 signer=signer
             )
-            pdf_signer.sign_pdf(pdf_in, pdf_out)
+
+            pdf_signer.sign_pdf(writer, pdf_out)
 
         return jsonify({
             "status": "success",

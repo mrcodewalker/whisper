@@ -211,10 +211,13 @@ def convert_pdf():
 
             reader = PdfFileReader(pdf_in)
             writer = IncrementalPdfFileWriter(pdf_in)
-            media_box = reader.pages[-1].media_box
+
+            media_box = reader[-1].media_box
+
             new_page = PageObject(writer, media_box=media_box)
             writer.add_page(new_page)
-            new_page_index = len(writer.reader.pages) - 1
+
+            new_page_index = len(reader)
 
             signature_meta = fields.append_signature_field(
                 writer,

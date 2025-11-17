@@ -209,11 +209,12 @@ def convert_pdf():
 
         with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:
 
-            reader = PdfFileReader(pdf_in)
             writer = IncrementalPdfFileWriter(pdf_in)
 
-            page_count = reader.page_count
-            last_page = reader.get_page(page_count - 1)
+            reader = writer.reader
+
+            page_count = len(reader.pages)
+            last_page = reader.pages[-1]
             media_box = last_page.media_box
 
             new_page = PageObject(writer, media_box=media_box)

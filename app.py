@@ -207,8 +207,8 @@ def convert_pdf():
         signer = SimpleSigner.load(key_file, cert_file)
 
         with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:
-            writer = IncrementalPdfFileWriter(pdf_in)
-            reader = writer.reader
+            reader = PdfFileReader(pdf_in)
+            writer = IncrementalPdfFileWriter(reader)
 
             # Add a new page and signature field
             page_count = len(reader.pages)

@@ -189,9 +189,12 @@ def convert_pdf():
         key_file = os.path.join("meetings", "global_sign", "private.key")
         cert_file = os.path.join("meetings", "global_sign", "public.pem")
 
+        print("Key file path:", key_file)
+        print("Cert file path:", cert_file)
+
         # Load signer
         with open(key_file, "rb") as key, open(cert_file, "rb") as cert:
-            signer = SimpleSigner.load(key.read(), cert.read())
+            signer = SimpleSigner.load(key_file, cert_file)
 
         # Sign the PDF
         with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:

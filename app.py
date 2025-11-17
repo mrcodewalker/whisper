@@ -10,6 +10,9 @@ from pyhanko.sign import signers
 from pyhanko.pdf_utils.incremental_update import IncrementalPdfFileWriter
 from pyhanko.sign.fields import SigFieldSpec
 from pyhanko.pdf_utils.reader import PdfFileReader
+from pyhanko.sign.general import load_cert_from_pemder
+from pyhanko.sign.signers import SimpleSigner, PdfSigner, PdfSignatureMetadata
+from pyhanko.sign.fields import append_signature_field
 
 app = Flask(__name__)
 allowed_origins = [
@@ -18,6 +21,7 @@ allowed_origins = [
     "https://36.50.54.109:8082",
     "http://localhost:4200",
     "https://localhost:4200",
+    "https://meeting.kolla.click",
     "https://meeting.kolla.click/"
 ]
 CORS(app, origins=allowed_origins, supports_credentials=True)
@@ -184,39 +188,22 @@ def convert_pdf():
         if not success:
             return jsonify({"error": "Failed to convert DOCX to PDF"}), 500
 
-        # Sign the PDF using pyhanko
+        # Sign the PDF using pyHanko
         signed_pdf_path = pdf_path.replace(".pdf", "_signed.pdf")
         key_file = os.path.join("meetings", "global_sign", "private.key")
         cert_file = os.path.join("meetings", "global_sign", "public.pem")
 
         # Load signer
-        signer = signers.SimpleSigner.load_from_files(
-            key_file=key_file,
-            cert_file=cert_file
-        )
-
-        # Open the original PDF
-        w = IncrementalPdfFileWriter(PdfFileReader(open(pdf_path, 'rb')))
-
-        # Define signature field
-        signature_field = SigFieldSpec(
-            'Signature1',
-            box=(50, 700, 250, 750),  # Coordinates for the signature
-            page=0
-        )
-
-        # Prepare the PDF signer
-        pdf_signer = signers.PdfSigner(
-            signers.PdfSignatureMetadata(
-                field_spec=signature_field,
-                md_algorithm='sha256'
-            ),
-            signer=signer
-        )
+        with open(key_file, "rb") as key, open(cert_file, "rb") as cert:
+            signer = SimpleSigner.load(key.read(), cert.read())
 
         # Sign the PDF
-        with open(signed_pdf_path, 'wb') as f:
-            pdf_signer.sign_pdf(w, output_file=f)
+        with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:
+            pdf_signer = PdfSigner(
+                signature_meta=PdfSignatureMetadata(field_name="Signature1"),
+                signer=signer
+            )
+            pdf_signer.sign_pdf(pdf_in, pdf_out)
 
         return jsonify({
             "status": "success",

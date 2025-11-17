@@ -7,11 +7,18 @@ import os, uuid
 from utils import try_convert_docx_to_pdf_libreoffice
 
 from pyhanko.sign.general import load_cert_from_pemder
+
 from pyhanko.sign.signers import SimpleSigner, PdfSigner, PdfSignatureMetadata
+
 from pyhanko.sign.fields import append_signature_field
 
+from pyhanko.pdf_utils.reader import PdfFileReader
+
+
 from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
+
 from pyhanko.sign import fields
+
 from pyhanko.pdf_utils.writer import PageObject
 
 
@@ -201,13 +208,12 @@ def convert_pdf():
 
 
         with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:
+
+            reader = PdfFileReader(pdf_in)
             writer = IncrementalPdfFileWriter(pdf_in)
-
-            media_box = writer.reader.pages[-1].media_box
-
+            media_box = reader.pages[-1].media_box
             new_page = PageObject(writer, media_box=media_box)
             writer.add_page(new_page)
-
             new_page_index = len(writer.reader.pages) - 1
 
             signature_meta = fields.append_signature_field(

@@ -2,7 +2,7 @@
 from flask import Flask, request, jsonify, send_from_directory, url_for
 from flask_cors import CORS
 from jobs import enqueue_job
-from datetime import datetime
+from datetime import datetime, timezone
 import os, uuid
 from utils import try_convert_docx_to_pdf_libreoffice
 
@@ -238,8 +238,8 @@ def create_key():
             .issuer_name(issuer)
             .public_key(key.public_key())
             .serial_number(x509.random_serial_number())
-            .not_valid_before(datetime.now(datetime.timezone.utc))
-            .not_valid_after(datetime.now(datetime.timezone.utc) + datetime.timedelta(days=10))
+            .not_valid_before(datetime.now(timezone.utc))
+            .not_valid_after(datetime.now(timezone.utc) + datetime.timedelta(days=10))
             .sign(key, hashes.SHA256())
         )
 

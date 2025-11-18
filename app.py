@@ -6,20 +6,14 @@ from datetime import datetime
 import os, uuid
 from utils import try_convert_docx_to_pdf_libreoffice
 
-from pyhanko.sign.general import load_cert_from_pemder
 
-from pyhanko.sign.signers import SimpleSigner, PdfSigner, PdfSignatureMetadata
-
-from pyhanko.sign.fields import append_signature_field
-
-from pyhanko.pdf_utils.reader import PdfFileReader
-
-
-from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
-
-from pyhanko.sign import fields
-
-from pyhanko.pdf_utils.writer import PageObject
+from flask import Flask, request, jsonify
+from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.x509.oid import NameOID
+from cryptography import x509
+from cryptography.hazmat.primitives.serialization import pkcs12 
+import datetime
 
 
 app = Flask(__name__)
@@ -195,53 +189,56 @@ def convert_pdf():
         if not success:
             return jsonify({"error": "failed to convert DOCX to PDF"}), 500
 
-        # Sign the PDF using pyHanko
-        signed_pdf_path = pdf_path.replace(".pdf", "_signed.pdf")
-        key_file = os.path.join("meetings", "global_sign", "private.key")
-        cert_file = os.path.join("meetings", "global_sign", "public.pem")
-
-        if not os.path.exists(key_file) or not os.path.exists(cert_file):
-            return jsonify({"error": "key or certificate file not found"}), 500
-
-        # Load signer
-        signer = SimpleSigner.load(key_file, cert_file)
-
-        with open(pdf_path, "rb") as pdf_in, open(signed_pdf_path, "wb") as pdf_out:
-
-            reader = PdfFileReader(pdf_in)
-            writer = IncrementalPdfFileWriter(reader)
-
-            # Add a signature field to the last page
-            page_count = len(reader.pages)
-            last_page = reader.pages[-1]
-            media_box = last_page.media_box
-
-            signature_meta = fields.append_signature_field(
-                writer,
-                fields.SigFieldSpec(
-                    'Signature1',
-                    on_page=page_count - 1,  # Last page
-                    box=(400, 50, 550, 150)  # Coordinates for the signature field
-                )
-            )
-
-            # Sign the PDF
-            pdf_signer = PdfSigner(
-                signature_meta=signature_meta,
-                signer=signer
-            )
-            pdf_signer.sign_pdf(writer, pdf_out)
-
-        return jsonify({"status": "success", "signed_pdf": signed_pdf_path}), 200
-
     except Exception as e:
-        return jsonify({"error": "failed to sign PDF", "details": str(e)}), 500
+        return jsonify({"error": "failed to convert PDF", "details": str(e)}), 500
 
 
 @app.route("/api/queue_status", methods=["GET"])
 def queue_status():
     """API to get the status of all jobs in the queue."""
     return jsonify({"error": "queue status checking is not available with Thread Pool"}), 501
+
+
+@app.route('/create_key', methods=['POST'])
+def create_key():
+    try:
+        # Lấy dữ liệu từ JSON request
+        data = request.get_json()
+        user_id = data.get('user_id')
+        user_name = data.get('user_name')
+
+        if not user_id or not user_name:
+            return jsonify({"error": "user_id và user_name là bắt buộc"}), 400
+
+        # 1. Tạo Private Key
+        key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+
+        # 2. Tạo Certificate tự ký
+        sign_text = user_id + user_name
+        subject = issuer = x509.Name([
+            x509.NameAttribute(NameOID.COMMON_NAME, sign_text),
+        ])
+        cert = (
+            x509.CertificateBuilder()
+            .subject_name(subject)
+            .issuer_name(issuer)
+            .public_key(key.public_key())
+            .serial_number(x509.random_serial_number())
+            .not_valid_before(datetime.datetime.now(datetime.timezone.utc))
+            .not_valid_after(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=10))
+            .sign(key, hashes.SHA256())
+        )
+
+        # 3. Lưu thành file .pfx (PKCS#12)
+        with open("{user_name}-{user_id}.pfx", "wb") as f:
+            # SỬA DÒNG NÀY: Dùng trực tiếp pkcs12.serialize... thay vì serialization.pkcs12...
+            f.write(pkcs12.serialize_key_and_certificates(
+                f"{user_id}-{user_name}".encode(), key, cert, None, serialization.BestAvailableEncryption(f"actvn@edu.vn{user_id}-{user_name}".encode())
+            ))
+
+        return jsonify({"message": "Tạo key thành công", "key": "{user_name}-{user_id}.pfx"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":

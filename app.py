@@ -312,6 +312,10 @@ def sign_pdf():
             with open(output_pdf, 'wb') as outf:
                 pdf_signer.sign_pdf(w, output=outf)
 
+        # Sau khi xuất ra file đã ký, xóa file PDF cũ
+        if os.path.exists(input_pdf):
+            os.remove(input_pdf)
+
         return jsonify({"message": "Đã ký file thành công", "output_pdf": output_pdf}), 200
 
     except Exception as e:

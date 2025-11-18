@@ -219,6 +219,11 @@ def create_key():
         if not user_id or not user_name:
             return jsonify({"error": "user_id và user_name là bắt buộc"}), 400
 
+        # Kiểm tra xem file PFX đã tồn tại hay chưa
+        pfx_path = f"keys/{user_id}-{user_name}.pfx"
+        if os.path.exists(pfx_path):
+            return jsonify({"message": "Key đã tồn tại", "key": pfx_path}), 200
+
         # 1. Tạo Private Key
         key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 

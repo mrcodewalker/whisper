@@ -196,7 +196,8 @@ def convert_pdf():
         success = try_convert_docx_to_pdf_libreoffice(docx_path, pdf_path)
         if not success:
             return jsonify({"error": "failed to convert DOCX to PDF"}), 500
-
+        
+        return jsonify({"message": "DOCX converted to PDF successfully", "pdf_path": pdf_path}), 200
     except Exception as e:
         return jsonify({"error": "failed to convert PDF", "details": str(e)}), 500
 

@@ -199,7 +199,7 @@ def queue_status():
     return jsonify({"error": "queue status checking is not available with Thread Pool"}), 501
 
 
-@app.route('/create_key', methods=['POST'])
+@app.route('/api/create_key', methods=['POST'])
 def create_key():
     try:
         # Lấy dữ liệu từ JSON request
@@ -230,13 +230,13 @@ def create_key():
         )
 
         # 3. Lưu thành file .pfx (PKCS#12)
-        with open("{user_name}-{user_id}.pfx", "wb") as f:
+        with open(f"keys/{user_name}-{user_id}.pfx", "wb") as f:
             # SỬA DÒNG NÀY: Dùng trực tiếp pkcs12.serialize... thay vì serialization.pkcs12...
             f.write(pkcs12.serialize_key_and_certificates(
                 f"{user_id}-{user_name}".encode(), key, cert, None, serialization.BestAvailableEncryption(f"actvn@edu.vn{user_id}-{user_name}".encode())
             ))
 
-        return jsonify({"message": "Tạo key thành công", "key": "{user_name}-{user_id}.pfx"}), 200
+        return jsonify({"message": "Tạo key thành công", "key": f"{user_name}-{user_id}.pfx"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

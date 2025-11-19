@@ -23,6 +23,8 @@ from pyhanko.stamp import TextStampStyle
 import os
 import glob
 
+from docx import Document
+
 
 app = Flask(__name__)
 allowed_origins = [
@@ -327,15 +329,16 @@ def sign_pdf():
         return jsonify({"error": str(e)}), 500
     
 
-@app.route("/api/get_document", methods=["GET"])
+@app.route("/api/get_document", methods=["POST"])
 def get_document():
-    meeting_id = request.args.get("meeting_id")
-    user_id = request.args.get("user_id")
+    data = request.get_json() or {}
+    meeting_id = data.get("meeting_id")
+    user_id = data.get("user_id")
 
     if not meeting_id or not user_id:
         return jsonify({"error": "missing meeting_id or user_id"}), 400
 
-    meeting_dir = os.path.join("meetings", meeting_id, "final")
+    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id, "final")
     if not os.path.exists(meeting_dir):
         return jsonify({"error": "meeting_id not found or final folder does not exist"}), 404
 
@@ -346,9 +349,10 @@ def get_document():
 
     docx_path = os.path.join(meeting_dir, docx_files[0])
     try:
-        with open(docx_path, "rb") as file:
-            content = file.read()
-        return jsonify({"meeting_id": meeting_id, "user_id": user_id, "content": content.decode("utf-8")})
+        # Read content from the .docx file
+        document = Document(docx_path)
+        content = "\n".join([paragraph.text for paragraph in document.paragraphs])
+        return jsonify({"meeting_id": meeting_id, "user_id": user_id, "content": content})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -368,8 +372,11 @@ def push_document():
 
     docx_path = os.path.join(meeting_dir, f"{user_id}.docx")
     try:
-        with open(docx_path, "w", encoding="utf-8") as file:
-            file.write(content)
+        # Write content to the .docx file
+        document = Document()
+        for line in content.split("\n"):
+            document.add_paragraph(line)
+        document.save(docx_path)
         return jsonify({"status": "success", "meeting_id": meeting_id, "user_id": user_id})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

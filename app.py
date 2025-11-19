@@ -204,60 +204,11 @@ def convert_pdf():
         return jsonify({"error": "failed to convert PDF", "details": str(e)}), 500
 
 
-@app.route("/api/queue_status", methods=["GET"])
-def queue_status():
-    """API to get the status of all jobs in the queue."""
-    return jsonify({"error": "queue status checking is not available with Thread Pool"}), 501
-
-
-@app.route('/api/create_key', methods=['POST'])
-def create_key():
-    try:
-        # Lấy dữ liệu từ JSON request
-        data = request.get_json()
-        user_id = data.get('user_id')
-        user_name = data.get('user_name')
-
-        if not user_id or not user_name:
-            return jsonify({"error": "user_id và user_name là bắt buộc"}), 400
-
-        # Kiểm tra xem file PFX đã tồn tại hay chưa
-        pfx_path = f"keys/{user_id}-{user_name}.pfx"
-        if os.path.exists(pfx_path):
-            return jsonify({"message": "Key đã tồn tại", "key": pfx_path}), 200
-
-        # 1. Tạo Private Key
-        key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-
-        # 2. Tạo Certificate tự ký
-        sign_text = user_id + user_name
-        subject = issuer = x509.Name([
-            x509.NameAttribute(NameOID.COMMON_NAME, sign_text),
-        ])
-        cert = (
-            x509.CertificateBuilder()
-            .subject_name(subject)
-            .issuer_name(issuer)
-            .public_key(key.public_key())
-            .serial_number(x509.random_serial_number())
-            .not_valid_before(datetime.now(timezone.utc))
-            .not_valid_after(datetime.now(timezone.utc) + timedelta(days=10))
-            .sign(key, hashes.SHA256())
-        )
-
-        # 3. Lưu thành file .pfx (PKCS#12)
-        with open(f"keys/{user_id}-{user_name}.pfx", "wb") as f:
-            # SỬA DÒNG NÀY: Dùng trực tiếp pkcs12.serialize... thay vì serialization.pkcs12...
-            f.write(pkcs12.serialize_key_and_certificates(
-                f"{user_id}-{user_name}".encode(), key, cert, None, serialization.BestAvailableEncryption(f"actvn@edu.vn{user_id}-{user_name}".encode())
-            ))
-
-        return jsonify({"message": "Tạo key thành công", "key": f"{user_id}-{user_name}.pfx"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 @app.route('/api/sign_pdf', methods=['POST'])
 def sign_pdf():
+    """
+    API to sign a PDF file.
+    """
     try:
         # Lấy dữ liệu từ JSON request
         data = request.get_json()
@@ -367,13 +318,20 @@ def push_document():
     if not meeting_id or not user_id or not content:
         return jsonify({"error": "missing meeting_id, user_id, or content"}), 400
 
-    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id, "final")
-    os.makedirs(meeting_dir, exist_ok=True)
+    meeting_dir = os.path.join("meetings", meeting_id, "final")
+    if not os.path.exists(meeting_dir):
+        return jsonify({"error": "meeting_id not found or final folder does not exist"}), 404
 
-    docx_path = os.path.join(meeting_dir, f"{user_id}.docx")
+    # Find the first .docx file in the final directory
+    docx_files = [f for f in os.listdir(meeting_dir) if f.endswith(".docx")]
+    if not docx_files:
+        return jsonify({"error": "no .docx file found in final folder"}), 404
+
+    docx_path = os.path.join(meeting_dir, docx_files[0])
     try:
-        # Write content to the .docx file
-        document = Document()
+        # Update content in the existing .docx file
+        document = Document(docx_path)
+        document._body.clear_content()  # Clear existing content
         for line in content.split("\n"):
             document.add_paragraph(line)
         document.save(docx_path)

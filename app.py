@@ -327,5 +327,53 @@ def sign_pdf():
         return jsonify({"error": str(e)}), 500
     
 
+@app.route("/api/get_document", methods=["GET"])
+def get_document():
+    meeting_id = request.args.get("meeting_id")
+    user_id = request.args.get("user_id")
+
+    if not meeting_id or not user_id:
+        return jsonify({"error": "missing meeting_id or user_id"}), 400
+
+    meeting_dir = os.path.join("meetings", meeting_id, "final")
+    if not os.path.exists(meeting_dir):
+        return jsonify({"error": "meeting_id not found or final folder does not exist"}), 404
+
+    # Find the first .docx file in the final directory
+    docx_files = [f for f in os.listdir(meeting_dir) if f.endswith(".docx")]
+    if not docx_files:
+        return jsonify({"error": "no .docx file found in final folder"}), 404
+
+    docx_path = os.path.join(meeting_dir, docx_files[0])
+    try:
+        with open(docx_path, "rb") as file:
+            content = file.read()
+        return jsonify({"meeting_id": meeting_id, "user_id": user_id, "content": content.decode("utf-8")})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/push_document", methods=["POST"])
+def push_document():
+    data = request.get_json() or {}
+    meeting_id = data.get("meeting_id")
+    user_id = data.get("user_id")
+    content = data.get("content")
+
+    if not meeting_id or not user_id or not content:
+        return jsonify({"error": "missing meeting_id, user_id, or content"}), 400
+
+    meeting_dir = os.path.join(MEETINGS_DIR, meeting_id, "final")
+    os.makedirs(meeting_dir, exist_ok=True)
+
+    docx_path = os.path.join(meeting_dir, f"{user_id}.docx")
+    try:
+        with open(docx_path, "w", encoding="utf-8") as file:
+            file.write(content)
+        return jsonify({"status": "success", "meeting_id": meeting_id, "user_id": user_id})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

@@ -1,8 +1,6 @@
 nohup: ignoring input
-[2025-11-15 23:12:38 +0700] [1307571] [INFO] Starting gunicorn 23.0.0
-[2025-11-15 23:12:38 +0700] [1307571] [INFO] Listening at: http://127.0.0.1:5000 (1307571)
-[2025-11-15 23:12:38 +0700] [1307571] [INFO] Using worker: sync
-[2025-11-15 23:12:38 +0700] [1307573] [INFO] Booting worker with pid: 1307573
-[2025-11-15 23:12:38 +0700] [1307574] [INFO] Booting worker with pid: 1307574
-[2025-11-15 23:12:38 +0700] [1307575] [INFO] Booting worker with pid: 1307575
-[2025-11-15 23:12:38 +0700] [1307576] [INFO] Booting worker with pid: 1307576
+[2025-11-19 22:10:28 +0700] [2822627] [INFO] Starting gunicorn 23.0.0
+[2025-11-19 22:10:28 +0700] [2822627] [INFO] Listening at: http://127.0.0.1:5000 (2822627)
+[2025-11-19 22:10:28 +0700] [2822627] [INFO] Using worker: sync
+[2025-11-19 22:10:28 +0700] [2822629] [INFO] Booting worker with pid: 2822629
+INFO:jobs:🔄 Job Worker started

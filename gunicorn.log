@@ -4,3 +4,8 @@ nohup: ignoring input
 [2025-11-19 22:10:28 +0700] [2822627] [INFO] Using worker: sync
 [2025-11-19 22:10:28 +0700] [2822629] [INFO] Booting worker with pid: 2822629
 INFO:jobs:🔄 Job Worker started
+[2025-11-20 12:19:47 +0700] [2822627] [INFO] Handling signal: hup
+[2025-11-20 12:19:47 +0700] [2822627] [INFO] Hang up: Master
+[2025-11-20 12:19:47 +0700] [86616] [INFO] Booting worker with pid: 86616
+[2025-11-20 12:19:47 +0700] [2822627] [ERROR] Worker (pid:2822629) was sent SIGHUP!
+INFO:jobs:🔄 Job Worker started
